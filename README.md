@@ -8,7 +8,7 @@
 ## Installing
 
 ```shell
-$ composer require jiannei/larvel-enum -vvv
+$ composer require jiannei/laravel-enum -vvv
 ```
 
 ## Usage
