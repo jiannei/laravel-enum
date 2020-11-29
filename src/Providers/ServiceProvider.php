@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Jiannei/laravel-enum.
+ *
+ * (c) Jiannei <longjian.huang@foxmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Jiannei\Enum\Laravel\Providers;
 
 use Illuminate\Contracts\Validation\Validator as ValidatorContract;
@@ -24,7 +33,7 @@ class ServiceProvider extends IlluminateServiceProvider
             $enum = $parameters[0] ?? null;
             $strict = $parameters[1] ?? null;
 
-            if (!$strict) {
+            if (! $strict) {
                 return (new EnumKey($enum))->passes($attribute, $value);
             }
 
@@ -37,7 +46,7 @@ class ServiceProvider extends IlluminateServiceProvider
             $enum = $parameters[0] ?? null;
             $strict = $parameters[1] ?? null;
 
-            if (!$strict) {
+            if (! $strict) {
                 return (new EnumValue($enum))->passes($attribute, $value);
             }
 
