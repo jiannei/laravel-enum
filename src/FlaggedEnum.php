@@ -1,7 +1,15 @@
 <?php
 
-namespace Jiannei\Enum\Laravel;
+/*
+ * This file is part of the Jiannei/laravel-enum.
+ *
+ * (c) Jiannei <longjian.huang@foxmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
 
+namespace Jiannei\Enum\Laravel;
 
 use Jiannei\Enum\Laravel\Exceptions\InvalidEnumValueException;
 
@@ -19,7 +27,8 @@ abstract class FlaggedEnum extends Enum
     /**
      * Construct a FlaggedEnum instance.
      *
-     * @param  int[]|Enum[]|mixed  $flags
+     * @param int[]|Enum[]|mixed $flags
+     *
      * @return void
      */
     public function __construct($flags)
@@ -41,8 +50,7 @@ abstract class FlaggedEnum extends Enum
     /**
      * Set the flags for the enum to the given array of flags.
      *
-     * @param  int[]|Enum[]  $flags
-     * @return self
+     * @param int[]|Enum[] $flags
      */
     public function setFlags(array $flags): self
     {
@@ -56,7 +64,8 @@ abstract class FlaggedEnum extends Enum
     /**
      * Return a FlaggedEnum instance with defined flags.
      *
-     * @param  int[]|Enum[]  $flags
+     * @param int[]|Enum[] $flags
+     *
      * @return FlaggedEnum
      */
     public static function flags(array $flags): self
@@ -67,8 +76,7 @@ abstract class FlaggedEnum extends Enum
     /**
      * Add the given flags to the enum.
      *
-     * @param  int[]|Enum[]  $flags
-     * @return self
+     * @param int[]|Enum[] $flags
      */
     public function addFlags(array $flags): self
     {
@@ -82,8 +90,7 @@ abstract class FlaggedEnum extends Enum
     /**
      * Add the given flag to the enum.
      *
-     * @param  int|Enum  $flag
-     * @return self
+     * @param int|Enum $flag
      */
     public function addFlag($flag): self
     {
@@ -94,8 +101,6 @@ abstract class FlaggedEnum extends Enum
 
     /**
      * Get the bitmask for the enum.
-     *
-     * @return int
      */
     public function getBitmask(): int
     {
@@ -124,13 +129,12 @@ abstract class FlaggedEnum extends Enum
     /**
      * Check if the enum has the specified flag.
      *
-     * @param  int|Enum  $flag
-     * @return bool
+     * @param int|Enum $flag
      */
     public function hasFlag($flag): bool
     {
         $flagValue = static::fromValue($flag)->value;
-        if ($flagValue === 0) {
+        if (0 === $flagValue) {
             return false;
         }
 
@@ -140,13 +144,12 @@ abstract class FlaggedEnum extends Enum
     /**
      * Check if the enum has all of the specified flags.
      *
-     * @param  int[]|Enum[]  $flags
-     * @return bool
+     * @param int[]|Enum[] $flags
      */
     public function hasFlags(array $flags): bool
     {
         foreach ($flags as $flag) {
-            if (! static::hasFlag($flag)) {
+            if (!static::hasFlag($flag)) {
                 return false;
             }
         }
@@ -156,8 +159,6 @@ abstract class FlaggedEnum extends Enum
 
     /**
      * Check if there are multiple flags set on the enum.
-     *
-     * @return bool
      */
     public function hasMultipleFlags(): bool
     {
@@ -167,14 +168,14 @@ abstract class FlaggedEnum extends Enum
     /**
      * Check if the enum doesn't have any of the specified flags.
      *
-     * @param  int[]|Enum[]  $flags
-     * @return bool
+     * @param int[]|Enum[] $flags
+     *
      * @throws InvalidEnumValueException
      */
     public function notHasFlags(array $flags): bool
     {
         foreach ($flags as $flag) {
-            if (! static::notHasFlag($flag)) {
+            if (!static::notHasFlag($flag)) {
                 return false;
             }
         }
@@ -185,20 +186,19 @@ abstract class FlaggedEnum extends Enum
     /**
      * Check if the enum does not have the specified flag.
      *
-     * @param  int|Enum  $flag
-     * @return bool
+     * @param int|Enum $flag
+     *
      * @throws InvalidEnumValueException
      */
     public function notHasFlag($flag): bool
     {
-        return ! $this->hasFlag($flag);
+        return !$this->hasFlag($flag);
     }
 
     /**
      * Remove the given flags from the enum.
      *
-     * @param  int[]|Enum[]  $flags
-     * @return self
+     * @param int[]|Enum[] $flags
      */
     public function removeFlags(array $flags): self
     {
@@ -212,8 +212,7 @@ abstract class FlaggedEnum extends Enum
     /**
      * Remove the given flag from the enum.
      *
-     * @param  int|Enum  $flag
-     * @return self
+     * @param int|Enum $flag
      */
     public function removeFlag($flag): self
     {

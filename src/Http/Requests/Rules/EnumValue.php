@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Jiannei/laravel-enum.
+ *
+ * (c) Jiannei <longjian.huang@foxmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Jiannei\Enum\Laravel\Http\Requests\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
@@ -27,8 +36,8 @@ class EnumValue implements Rule
     /**
      * Create a new rule instance.
      *
-     * @param  string|\Jiannei\Enum\Laravel\Enum  $enumClass
-     * @param  bool  $strict
+     * @param string|\Jiannei\Enum\Laravel\Enum $enumClass
+     *
      * @return void
      */
     public function __construct($enumClass, bool $strict = true)
@@ -36,7 +45,7 @@ class EnumValue implements Rule
         $this->enumClass = $enumClass;
         $this->strict = $strict;
 
-        if (! class_exists($this->enumClass)) {
+        if (!class_exists($this->enumClass)) {
             throw new InvalidArgumentException("Cannot validate against the enum, the class {$this->enumClass} doesn't exist.");
         }
     }
@@ -68,8 +77,9 @@ class EnumValue implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param  string  $attribute
-     * @param  mixed  $value
+     * @param string $attribute
+     * @param mixed  $value
+     *
      * @return bool
      */
     public function passes($attribute, $value)
@@ -81,7 +91,7 @@ class EnumValue implements Rule
             }
 
             // All bits should be unset
-            return $value === 0;
+            return 0 === $value;
         }
 
         if (is_subclass_of($value, \Jiannei\Enum\Laravel\Enum::class)) {

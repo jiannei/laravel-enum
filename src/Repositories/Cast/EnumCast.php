@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Jiannei/laravel-enum.
+ *
+ * (c) Jiannei <longjian.huang@foxmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Jiannei\Enum\Laravel\Repositories\Cast;
 
 use Jiannei\Enum\Laravel\Enum;
@@ -21,13 +30,11 @@ class EnumCast implements CastsAttributes
     }
 
     /**
-     * @param  mixed  $value
-     *
-     * @return Enum|null
+     * @param mixed $value
      */
     protected function castEnum($value): ?Enum
     {
-        if ($value === null || $value instanceof $this->enumClass) {
+        if (null === $value || $value instanceof $this->enumClass) {
             return $value;
         }
 
@@ -39,7 +46,7 @@ class EnumCast implements CastsAttributes
     /**
      * Retrieve the value that can be casted into Enum.
      *
-     * @param  mixed  $value
+     * @param mixed $value
      *
      * @return mixed
      */

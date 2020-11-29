@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Jiannei/laravel-enum.
+ *
+ * (c) Jiannei <longjian.huang@foxmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Jiannei\Enum\Laravel;
 
 use Illuminate\Contracts\Database\Eloquent\Castable;
@@ -28,7 +37,7 @@ abstract class Enum implements EnumContract, Castable
 
     public function __construct($enumValue, bool $strict = true)
     {
-        if (! static::hasValue($enumValue, $strict)) {
+        if (!static::hasValue($enumValue, $strict)) {
             throw new InvalidEnumValueException($enumValue, $this);
         }
 
@@ -57,7 +66,7 @@ abstract class Enum implements EnumContract, Castable
     {
         $calledClass = static::class;
 
-        if (! array_key_exists($calledClass, static::$cache)) {
+        if (!array_key_exists($calledClass, static::$cache)) {
             $reflect = new ReflectionClass($calledClass);
             static::$cache[$calledClass] = $reflect->getConstants();
         }
@@ -183,7 +192,7 @@ abstract class Enum implements EnumContract, Castable
 
     public static function fromKey(string $key, bool $strict = true): self
     {
-        if (! static::hasKey($key, $strict)) {
+        if (!static::hasKey($key, $strict)) {
             throw new InvalidEnumKeyException($key, static::class);
         }
 
@@ -275,6 +284,6 @@ abstract class Enum implements EnumContract, Castable
 
     public function isNot($enumValue): bool
     {
-        return ! $this->is($enumValue);
+        return !$this->is($enumValue);
     }
 }

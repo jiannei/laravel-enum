@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Jiannei/laravel-enum.
+ *
+ * (c) Jiannei <longjian.huang@foxmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Jiannei\Enum\Laravel\Exceptions;
 
 use Exception;
@@ -10,8 +19,9 @@ class InvalidEnumKeyException extends Exception
     /**
      * Create an InvalidEnumKeyException.
      *
-     * @param  mixed  $invalidKey
-     * @param  Enum|string  $enumClass
+     * @param mixed       $invalidKey
+     * @param Enum|string $enumClass
+     *
      * @return void
      */
     public function __construct($invalidKey, $enumClass)
