@@ -2,6 +2,7 @@
 
 <p align="center"> 一个简单好用的枚举扩展包，帮助你更方便地管理项目中的枚举，支持 Laravel 和 Lumen。</p>
 
+[![StyleCI](https://github.styleci.io/repos/316907996/shield?branch=main)](https://github.styleci.io/repos/316907996?branch=main)
 
 ## Installing
 
