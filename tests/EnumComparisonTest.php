@@ -1,11 +1,18 @@
 <?php
 
-namespace Jiannei\Enum\Laravel\Tests;
+/*
+ * This file is part of the Jiannei/laravel-enum.
+ *
+ * (c) Jiannei <longjian.huang@foxmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
 
+namespace Jiannei\Enum\Laravel\Tests;
 
 use Jiannei\Enum\Laravel\Tests\Enums\StringValuesEnum;
 use Jiannei\Enum\Laravel\Tests\Enums\UserTypeEnum;
-use Jiannei\Enum\Laravel\Tests\TestCase;
 
 class EnumComparisonTest extends TestCase
 {
