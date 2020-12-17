@@ -28,7 +28,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Jiannei\\Enum\\Laravel\\Providers\\ServiceProvider"
+                "Jiannei\\Enum\\Laravel\\Providers\\LaravelServiceProvider"
             ]
         }
     },

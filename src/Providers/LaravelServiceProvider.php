@@ -14,14 +14,21 @@ namespace Jiannei\Enum\Laravel\Providers;
 use Illuminate\Contracts\Validation\Validator as ValidatorContract;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
+use Illuminate\Support\ServiceProvider;
 use Jiannei\Enum\Laravel\Http\Requests\EnumRequest;
 use Jiannei\Enum\Laravel\Http\Requests\Rules\Enum;
 use Jiannei\Enum\Laravel\Http\Requests\Rules\EnumKey;
 use Jiannei\Enum\Laravel\Http\Requests\Rules\EnumValue;
 
-class ServiceProvider extends IlluminateServiceProvider
+class LaravelServiceProvider extends ServiceProvider
 {
+    public function register()
+    {
+        $this->registerRequestTransformMacro();
+
+        $this->setupConfig();
+    }
+
     public function boot()
     {
         $this->bootValidationRules();
@@ -62,13 +69,6 @@ class ServiceProvider extends IlluminateServiceProvider
         });
     }
 
-    public function register()
-    {
-        $this->registerRequestTransformMacro();
-
-        $this->setupConfig();
-    }
-
     protected function registerRequestTransformMacro()
     {
         Request::mixin(new EnumRequest);
@@ -77,6 +77,10 @@ class ServiceProvider extends IlluminateServiceProvider
     protected function setupConfig()
     {
         $path = dirname(__DIR__, 2).'/config/enum.php';
+
+        if ($this->app->runningInConsole()) {
+            $this->publishes([$path => config_path('enum.php')], 'enum');
+        }
 
         $this->mergeConfigFrom($path, 'enum');
     }

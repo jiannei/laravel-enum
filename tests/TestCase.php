@@ -12,14 +12,14 @@
 namespace Jiannei\Enum\Laravel\Tests;
 
 use Illuminate\Http\Request;
-use Jiannei\Enum\Laravel\Providers\ServiceProvider;
+use Jiannei\Enum\Laravel\Providers\LaravelServiceProvider;
 
 abstract class TestCase extends \Orchestra\Testbench\TestCase
 {
     protected function getPackageProviders($app)
     {
         return [
-            ServiceProvider::class,
+            LaravelServiceProvider::class,
         ];
     }
 
