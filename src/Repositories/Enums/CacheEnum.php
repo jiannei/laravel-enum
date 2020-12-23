@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Jiannei/laravel-enum.
+ *
+ * (c) Jiannei <longjian.huang@foxmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Jiannei\Enum\Laravel\Repositories\Enums;
 
 use Illuminate\Support\Str;
@@ -36,7 +45,7 @@ class CacheEnum extends Enum implements LocalizedEnumContract
      * Get cache key.
      *
      * @param $value
-     * @param  string|integer|null  $identifier
+     * @param  string|int|null  $identifier
      * @return string
      */
     public static function getCacheKey($value, $identifier = null): string
@@ -56,7 +65,7 @@ class CacheEnum extends Enum implements LocalizedEnumContract
      */
     public static function getCacheExpireTime($value, $options = null)
     {
-        if (!method_exists(static::class, $value)) {
+        if (! method_exists(static::class, $value)) {
             throw new InvalidMethodException($value, static::class);
         }
 
