@@ -14,7 +14,7 @@ namespace Jiannei\Enum\Laravel\Repositories\Enums;
 use Jiannei\Enum\Laravel\Contracts\LocalizedEnumContract;
 use Jiannei\Enum\Laravel\Enum;
 
-class ResponseCodeEnum extends Enum implements LocalizedEnumContract
+class HttpStatusCodeEnum extends Enum implements LocalizedEnumContract
 {
     const HTTP_CONTINUE = 100;
     const HTTP_SWITCHING_PROTOCOLS = 101;

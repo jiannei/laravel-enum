@@ -11,9 +11,10 @@
 
 namespace Jiannei\Enum\Laravel\Tests\Enums;
 
+use Jiannei\Enum\Laravel\Contracts\LocalizedEnumContract;
 use Jiannei\Enum\Laravel\Enum;
 
-final class UserTypeEnum extends Enum
+final class UserTypeEnum extends Enum implements LocalizedEnumContract
 {
     const ADMINISTRATOR = 0;
 

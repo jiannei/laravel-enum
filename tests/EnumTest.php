@@ -12,6 +12,7 @@
 namespace Jiannei\Enum\Laravel\Tests;
 
 use Jiannei\Enum\Laravel\Enum;
+use Jiannei\Enum\Laravel\Tests\Enums\ExampleEnum;
 use Jiannei\Enum\Laravel\Tests\Enums\StringValuesEnum;
 use Jiannei\Enum\Laravel\Tests\Enums\UserTypeEnum;
 
@@ -56,23 +57,28 @@ class EnumTest extends TestCase
         $this->assertEquals(3, UserTypeEnum::getValue('SUPER_ADMINISTRATOR'));
     }
 
-//    public function testEnumGetDescription()
-//    {
-//        // 根据常量的值获取常量的描述信息
-//        // 1. 不存在语言包的情况，返回较为友好的英文描述
-//        $this->assertEquals('Administrator', UserTypeEnum::getDescription(UserTypeEnum::ADMINISTRATOR));
-//
-//        // 2. 在 resource/lang/zh-CN/enums.php 中定义常量与描述的对应关系（enums.php 文件名称可以在 config/enum.php 文件中配置）
-//        $this->assertEquals('登录成功', ResponseCodeEnum::getDescription(ResponseCodeEnum::SERVICE_LOGIN_SUCCESS));
-//
-//        // 补充：也可以先实例化常量对象，然后再根据对象实例来获取常量描述
-//        $responseEnum = new ResponseCodeEnum(ResponseCodeEnum::SERVICE_LOGIN_SUCCESS);
-//        $this->assertEquals('登录成功', $responseEnum->description);
-//    }
+    public function testEnumGetDescription()
+    {
+        // 根据常量的值获取常量的描述信息
+        $this->app->setLocale('zh-CN');
+
+        // 1. 不存在语言包的情况，返回较为友好的英文描述
+        $this->assertEquals('Moderator', ExampleEnum::getDescription(ExampleEnum::MODERATOR));
+
+        // 2. 在 resource/lang/zh-CN/enums.php 中定义常量与描述的对应关系（enums.php 文件名称可以在 config/enum.php 文件中配置）
+        $this->assertEquals('管理员', ExampleEnum::getDescription(ExampleEnum::ADMINISTRATOR));
+
+        // 补充：也可以先实例化常量对象，然后再根据对象实例来获取常量描述
+        $responseEnum = new ExampleEnum(ExampleEnum::ADMINISTRATOR);
+        $this->assertEquals('管理员', $responseEnum->description);
+
+        $responseEnum = ExampleEnum::ADMINISTRATOR();
+        $this->assertEquals('管理员', $responseEnum->description);
+    }
 
     public function testEnumHasValue()
     {
-        // 检查常量是否包含某个 常量值
+        // 检查定义的常量中是否包含某个「常量值」
         $this->assertTrue(UserTypeEnum::hasValue(1));
 
         $this->assertFalse(UserTypeEnum::hasValue(-1));
@@ -80,7 +86,7 @@ class EnumTest extends TestCase
 
     public function testEnumHasKey()
     {
-        // 检查常量是否包含某个 常量名称
+        // 检查定义的常量中是否包含某个「常量值」
         $this->assertTrue(UserTypeEnum::hasKey('MODERATOR'));
 
         $this->assertFalse(UserTypeEnum::hasKey('ADMIN'));
@@ -142,8 +148,8 @@ class EnumTest extends TestCase
         $administrator5 = UserTypeEnum::make('administrator'); // strict 默认为 true，会校验传入值的大小写
         $this->assertNotInstanceOf(UserTypeEnum::class, $administrator5);
 
-        $administrator4 = UserTypeEnum::make('administrator', false); // strict 设置为 false，不校验传入值的大小写
-        $this->assertInstanceOf(UserTypeEnum::class, $administrator4);
+        $administrator6 = UserTypeEnum::make('AdminiStrator', false); // strict 设置为 false，不校验传入值的大小写
+        $this->assertInstanceOf(UserTypeEnum::class, $administrator6);
     }
 
     public function testEnumGetRandomKey()
@@ -174,13 +180,15 @@ class EnumTest extends TestCase
 
     public function testEnumToSelectArray()
     {
+        $this->app->setLocale('zh-CN');
+
         // 转换为 value => key 形式的数组，可以用于页面的下拉选项
         $array = UserTypeEnum::toSelectArray();
         $expectedArray = [
-            0 => 'Administrator',
-            1 => 'Moderator',
-            2 => 'Subscriber',
-            3 => 'Super administrator',
+            0 => '管理员',
+            1 => '监督员',
+            2 => '订阅用户',
+            3 => '超级管理员',
         ];
 
         $this->assertEquals($expectedArray, $array);
@@ -188,7 +196,7 @@ class EnumTest extends TestCase
 
     public function testEnumToSelectArrayWithStringValues()
     {
-        // 转换为  value => key 形式的数组，可以用于页面的下拉选项
+        // 转换为  value => description 形式的数组，可以用于页面的下拉选项
         $array = StringValuesEnum::toSelectArray();
         $expectedArray = [
             'administrator' => 'Administrator',
