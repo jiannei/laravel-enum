@@ -5,6 +5,8 @@
 ![Test](https://github.com/Jiannei/laravel-enum/workflows/Test/badge.svg?branch=main)
 [![StyleCI](https://github.styleci.io/repos/316907996/shield?branch=main)](https://github.styleci.io/repos/316907996?branch=main)
 
+**社区讨论**：[教你更优雅地写 API 之「枚举使用」](https://learnku.com/articles/53015)
+
 ## 介绍
 
 `laravel-enum` 主要用来扩展项目中的常量使用，通过合理的定义常量可以使代码更加规范，更易阅读和维护。
