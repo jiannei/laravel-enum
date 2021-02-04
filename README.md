@@ -39,7 +39,7 @@ $ composer require jiannei/laravel-enum -vvv
 
 return [
     'localization' => [
-        'key' => env('ENUM_LOCALIZATION_KEY', 'enums'),// 语言包的文件名。如果 APP_LOCALE=zh-CN，则这里对应 resources/lang/zh-CN/enums.php
+        'key' => env('ENUM_LOCALIZATION_KEY', 'enums'),// 语言包的文件名。如果 APP_LOCALE=zh_CN，则这里对应 resources/lang/zh_CN/enums.php
     ],
 
     // 通过 transform 中间件将 request 中的参数转换成枚举实例时定义对应关系
@@ -165,7 +165,7 @@ UserTypeEnum::getValue('MODERATOR');// 1
 // 1. 不存在语言包的情况，返回较为友好的英文描述
 UserTypeEnum::getDescription(UserTypeEnum::ADMINISTRATOR);// Administrator
 
-// 2. 在 resource/lang/zh-CN/enums.php 中定义常量与描述的对应关系（enums.php 文件名称可以在 config/enum.php 文件中配置）
+// 2. 在 resource/lang/zh_CN/enums.php 中定义常量与描述的对应关系（enums.php 文件名称可以在 config/enum.php 文件中配置）
 ExampleEnum::getDescription(ExampleEnum::ADMINISTRATOR);// 管理员
 
 // 补充：也可以先实例化常量对象，然后再根据对象实例来获取常量描述

@@ -21,7 +21,7 @@ class EnumLocalizationTest extends TestCase
         $this->app->setLocale('en');
         $this->assertEquals('Super administrator', ExampleEnum::getDescription(ExampleEnum::SUPER_ADMINISTRATOR));
 
-        $this->app->setLocale('zh-CN');
+        $this->app->setLocale('zh_CN');
         $this->assertEquals('超级管理员', ExampleEnum::getDescription(ExampleEnum::SUPER_ADMINISTRATOR));
     }
 
@@ -31,7 +31,7 @@ class EnumLocalizationTest extends TestCase
         $this->app->setLocale('en');
         $this->assertEquals('Moderator', ExampleEnum::getDescription(ExampleEnum::MODERATOR));
 
-        $this->app->setLocale('zh-CN');
+        $this->app->setLocale('zh_CN');
         $this->assertEquals('Moderator', ExampleEnum::getDescription(ExampleEnum::MODERATOR));
     }
 }

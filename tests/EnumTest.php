@@ -60,12 +60,12 @@ class EnumTest extends TestCase
     public function testEnumGetDescription()
     {
         // 根据常量的值获取常量的描述信息
-        $this->app->setLocale('zh-CN');
+        $this->app->setLocale('zh_CN');
 
         // 1. 不存在语言包的情况，返回较为友好的英文描述
         $this->assertEquals('Moderator', ExampleEnum::getDescription(ExampleEnum::MODERATOR));
 
-        // 2. 在 resource/lang/zh-CN/enums.php 中定义常量与描述的对应关系（enums.php 文件名称可以在 config/enum.php 文件中配置）
+        // 2. 在 resource/lang/zh_CN/enums.php 中定义常量与描述的对应关系（enums.php 文件名称可以在 config/enum.php 文件中配置）
         $this->assertEquals('管理员', ExampleEnum::getDescription(ExampleEnum::ADMINISTRATOR));
 
         // 补充：也可以先实例化常量对象，然后再根据对象实例来获取常量描述
@@ -180,7 +180,7 @@ class EnumTest extends TestCase
 
     public function testEnumToSelectArray()
     {
-        $this->app->setLocale('zh-CN');
+        $this->app->setLocale('zh_CN');
 
         // 转换为 value => key 形式的数组，可以用于页面的下拉选项
         $array = UserTypeEnum::toSelectArray();
