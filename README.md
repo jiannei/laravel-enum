@@ -4,12 +4,17 @@
 
 ![Test](https://github.com/Jiannei/laravel-enum/workflows/Test/badge.svg?branch=main)
 [![StyleCI](https://github.styleci.io/repos/316907996/shield?branch=main)](https://github.styleci.io/repos/316907996?branch=main)
-
-**社区讨论**：[教你更优雅地写 API 之「枚举使用」](https://learnku.com/articles/53015)
+[![Latest Stable Version](http://poser.pugx.org/jiannei/laravel-enum/v)](https://packagist.org/packages/jiannei/laravel-enum) 
+[![Total Downloads](http://poser.pugx.org/jiannei/laravel-enum/downloads)](https://packagist.org/packages/jiannei/laravel-enum)
+[![Monthly Downloads](http://poser.pugx.org/jiannei/laravel-enum/d/monthly)](https://packagist.org/packages/jiannei/laravel-enum)
+[![Latest Unstable Version](http://poser.pugx.org/jiannei/laravel-enum/v/unstable)](https://packagist.org/packages/jiannei/laravel-enum) 
+[![License](http://poser.pugx.org/jiannei/laravel-enum/license)](https://packagist.org/packages/jiannei/laravel-enum)
 
 ## 介绍
 
 `laravel-enum` 主要用来扩展项目中的常量使用，通过合理的定义常量可以使代码更加规范，更易阅读和维护。
+
+**社区讨论**：[教你更优雅地写 API 之「枚举使用」](https://learnku.com/articles/53015)
 
 ## 概览
 
@@ -81,7 +86,6 @@ class Kernel extends HttpKernel
 ```
 
 ### Lumen
-
 
 - 复制配置文件到 `vendor/jiannei/laravel-enum/config/enum.php`，到 `config/enum.php`
 
