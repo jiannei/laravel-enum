@@ -19,7 +19,7 @@ class TransformEnums
 {
     public function handle(Request $request, Closure $next, $strict = true)
     {
-        $strict = (bool) json_decode(strtolower($strict));
+        $strict = strtobool($strict);
 
         $request->transformEnums(Config::get('enum.transformations'), $strict);
 
