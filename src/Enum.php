@@ -217,7 +217,7 @@ abstract class Enum implements EnumContract, Castable
         return $value;
     }
 
-    public static function castUsing()
+    public static function castUsing(array $arguments)
     {
         return new EnumCast(static::class);
     }
