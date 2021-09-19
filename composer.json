@@ -9,7 +9,6 @@
         }
     ],
     "require": {
-        "php": "^7.3|^8.0",
         "ext-json": "*",
         "jiannei/helpers": "^0.2.1"
     },
