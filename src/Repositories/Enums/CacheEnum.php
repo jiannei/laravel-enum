@@ -61,6 +61,7 @@ class CacheEnum extends Enum implements LocalizedEnumContract
      * @param $value
      * @param  null  $options
      * @return mixed
+     *
      * @throws InvalidMethodException
      */
     public static function getCacheExpireTime($value, $options = null)

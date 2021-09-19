@@ -177,6 +177,7 @@ abstract class FlaggedEnum extends Enum
      *
      * @param  int[]|Enum[]  $flags
      * @return bool
+     *
      * @throws InvalidEnumValueException
      */
     public function notHasFlags(array $flags): bool
@@ -195,6 +196,7 @@ abstract class FlaggedEnum extends Enum
      *
      * @param  int|Enum  $flag
      * @return bool
+     *
      * @throws InvalidEnumValueException
      */
     public function notHasFlag($flag): bool
