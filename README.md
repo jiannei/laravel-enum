@@ -1,6 +1,7 @@
 <h1 align="center"> laravel-enum </h1>
 
-<p align="center"> 一个简单好用的枚举扩展包，帮助你更方便地管理项目中的枚举，支持 Laravel 和 Lumen。</p>
+> A simple and easy-to-use enumeration extension package to help you manage enumerations in your project more conveniently, supporting Laravel and Lumen.
+> - 一个简单好用的枚举扩展包，帮助你更方便地管理项目中的枚举，支持 Laravel 和 Lumen。
 
 ![Test](https://github.com/Jiannei/laravel-enum/workflows/Test/badge.svg?branch=main)
 [![StyleCI](https://github.styleci.io/repos/316907996/shield?branch=main)](https://github.styleci.io/repos/316907996?branch=main)
@@ -9,16 +10,6 @@
 [![Monthly Downloads](http://poser.pugx.org/jiannei/laravel-enum/d/monthly)](https://packagist.org/packages/jiannei/laravel-enum)
 [![Latest Unstable Version](http://poser.pugx.org/jiannei/laravel-enum/v/unstable)](https://packagist.org/packages/jiannei/laravel-enum) 
 [![License](http://poser.pugx.org/jiannei/laravel-enum/license)](https://packagist.org/packages/jiannei/laravel-enum)
-
-## 社区讨论文章
-
-- [是时候使用 Lumen 8 + API Resource 开发项目了！](https://learnku.com/articles/45311)
-- [教你更优雅地写 API 之「路由设计」](https://learnku.com/articles/45526)
-- [教你更优雅地写 API 之「规范响应数据」](https://learnku.com/articles/52784)
-- [教你更优雅地写 API 之「枚举使用」](https://learnku.com/articles/53015)
-- [教你更优雅地写 API 之「记录日志」](https://learnku.com/articles/53669)
-- [教你更优雅地写 API 之「灵活地任务调度」](https://learnku.com/articles/58403)
-
 
 ## 介绍
 
@@ -30,7 +21,6 @@
 - 支持多语言本地化描述
 - 支持表单验证，提供验证规则 enum，enum_key 和 enum_value，对请求参数中的参数进行枚举校验
 - 支持路由中间件自动将 Request 参数转换成相应枚举实例
-- 支持 `Eloquent\Model` 中的 `$casts` 特性，将查询出的数据自动转换成枚举实例
 - 提供了便捷的比较方法`is`、`isNot`和`in`，用于枚举实例之间的对比
 - 内置了多种实用的枚举集：
     - 标准的 Http 状态码枚举定义，方便在 API 返回响应数据时设置 Http 状态码；
@@ -397,30 +387,6 @@ class AuthorizationController extends Controller
 - 引入了 `\Jiannei\Enum\Laravel\Http\Middleware\TransformEnums` 到路由中间件中。
 - 在 Controller 中以 `$this->middleware('enum:false');` 形式使用`TransformEnums` 中间件，并且向中间件传入了 false 参数。对应上面的`UserTypeEnum::make('AdminiStrator', false);` ，将不会对枚举参数进行大小写和类型校验
 - `$request->get('identity_type')` 获取到的是 `IdentityTypeEnum` 实例，Enum 实例中提供了 `is`、`isNot` 和 `in` 共 3 种枚举实例之间的比较方法
-
-### Model 中的枚举转换
-
-为了实现上面的多账号类型登录，account 数据表中就需要有字段 `identity_type` 来描述账号类型。
-
-Laravel 的 `Eloquent\Model` 提供了 `$casts` 特性，可以将查询出来的数据字段转换成指定类型。这里也可以利用这个特性，将 account 表中的 `identity_type` 转换成 `IdentityTypeEnum` 实例。
-
-```php
-<?php
-
-namespace App\Repositories\Models\MySql;
-
-use App\Repositories\Enums\IdentityTypeEnum;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-
-class User extends Authenticatable
-{
-
-    protected $casts = [
-        'identity_type' => IdentityTypeEnum::class
-    ];
-}
-```
-
 
 ### 缓存枚举
 
