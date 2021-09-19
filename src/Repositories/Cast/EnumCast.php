@@ -31,7 +31,6 @@ class EnumCast implements CastsAttributes
 
     /**
      * @param  mixed  $value
-     *
      * @return Enum|null
      */
     protected function castEnum($value): ?Enum
@@ -49,7 +48,6 @@ class EnumCast implements CastsAttributes
      * Retrieve the value that can be casted into Enum.
      *
      * @param  mixed  $value
-     *
      * @return mixed
      */
     protected function getCastableValue($value)
