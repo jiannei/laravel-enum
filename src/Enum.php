@@ -11,6 +11,7 @@
 
 namespace Jiannei\Enum\Laravel;
 
+use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Str;
@@ -19,9 +20,10 @@ use Jiannei\Enum\Laravel\Contracts\EnumContract;
 use Jiannei\Enum\Laravel\Contracts\LocalizedEnumContract;
 use Jiannei\Enum\Laravel\Exceptions\InvalidEnumKeyException;
 use Jiannei\Enum\Laravel\Exceptions\InvalidEnumValueException;
+use Jiannei\Enum\Laravel\Repositories\Cast\EnumCast;
 use ReflectionClass;
 
-abstract class Enum implements EnumContract
+abstract class Enum implements EnumContract, Castable
 {
     use Macroable {
         __callStatic as macroCallStatic;
@@ -213,6 +215,11 @@ abstract class Enum implements EnumContract
     public static function serializeDatabase($value)
     {
         return $value;
+    }
+
+    public static function castUsing()
+    {
+        return new EnumCast(static::class);
     }
 
     public static function toSelectArray(): array
