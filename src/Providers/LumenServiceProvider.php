@@ -15,8 +15,6 @@ class LumenServiceProvider extends LaravelServiceProvider
 {
     public function boot()
     {
-        parent::boot();
-
         $this->app->configure('enum');
     }
 
