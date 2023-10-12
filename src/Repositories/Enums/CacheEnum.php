@@ -44,7 +44,7 @@ class CacheEnum extends Enum implements LocalizedEnumContract
     /**
      * Get cache key.
      *
-     * @param $value
+     * @param  $value
      * @param  string|int|null  $identifier
      * @return string
      */
@@ -58,7 +58,7 @@ class CacheEnum extends Enum implements LocalizedEnumContract
     /**
      * Get cache expire time.
      *
-     * @param $value
+     * @param  $value
      * @param  null  $options
      * @return mixed
      *

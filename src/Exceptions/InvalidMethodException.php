@@ -19,7 +19,7 @@ class InvalidMethodException extends Exception
     /**
      * Create an InvalidMethodException.
      *
-     * @param $invalidMethod
+     * @param  $invalidMethod
      * @param  Enum|string  $enumClass
      */
     public function __construct($invalidMethod, $enumClass)

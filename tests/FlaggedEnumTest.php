@@ -1,8 +1,16 @@
 <?php
 
+/*
+ * This file is part of the Jiannei/laravel-enum.
+ *
+ * (c) Jiannei <longjian.huang@foxmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 uses(\Jiannei\Enum\Laravel\Tests\TestCase::class);
 use Jiannei\Enum\Laravel\Tests\Enums\SuperPowersEnum;
-
 
 test('can construct flagged enum using static properties', function () {
     // 实例化 Flagged 常量对象的几种方式

@@ -19,7 +19,7 @@ class InvalidEnumValueException extends Exception
     /**
      * Create an InvalidEnumValueException.
      *
-     * @param $invalidValue
+     * @param  $invalidValue
      * @param  Enum|string  $enumClass
      */
     public function __construct($invalidValue, $enumClass)

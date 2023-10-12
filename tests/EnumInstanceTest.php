@@ -1,10 +1,18 @@
 <?php
 
+/*
+ * This file is part of the Jiannei/laravel-enum.
+ *
+ * (c) Jiannei <longjian.huang@foxmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 uses(\Jiannei\Enum\Laravel\Tests\TestCase::class);
 use Jiannei\Enum\Laravel\Exceptions\InvalidEnumKeyException;
 use Jiannei\Enum\Laravel\Exceptions\InvalidEnumValueException;
 use Jiannei\Enum\Laravel\Tests\Enums\UserTypeEnum;
-
 
 test('can instantiate enum class with new', function () {
     // 使用 new 方式实例化常量

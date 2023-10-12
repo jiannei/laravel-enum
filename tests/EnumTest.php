@@ -1,11 +1,19 @@
 <?php
 
+/*
+ * This file is part of the Jiannei/laravel-enum.
+ *
+ * (c) Jiannei <longjian.huang@foxmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 uses(\Jiannei\Enum\Laravel\Tests\TestCase::class);
 use Jiannei\Enum\Laravel\Enum;
 use Jiannei\Enum\Laravel\Tests\Enums\ExampleEnum;
 use Jiannei\Enum\Laravel\Tests\Enums\StringValuesEnum;
 use Jiannei\Enum\Laravel\Tests\Enums\UserTypeEnum;
-
 
 test('enum values', function () {
     // 常规用法：获取常量的值
