@@ -12,12 +12,26 @@
 namespace Jiannei\Enum\Laravel\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Jiannei\Enum\Laravel\Console\Commands\MakeEnumCommand;
 
 class LaravelServiceProvider extends ServiceProvider
 {
     public function register()
     {
         $this->setupConfig();
+    }
+
+    public function boot()
+    {
+        $this->publishes([
+            dirname(__DIR__,2) . '/stubs' => $this->app->basePath('stubs'),
+        ], 'stubs');
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                MakeEnumCommand::class,
+            ]);
+        }
     }
 
     protected function setupConfig()

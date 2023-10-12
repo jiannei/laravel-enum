@@ -1,0 +1,8 @@
+<?php
+
+namespace DummyNamespace;
+
+Enum DummyClass:int
+{
+   case Foo = 0;
+}
