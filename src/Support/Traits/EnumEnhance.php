@@ -11,6 +11,8 @@
 
 namespace Jiannei\Enum\Laravel\Support\Traits;
 
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Str;
 
 trait EnumEnhance
@@ -27,7 +29,9 @@ trait EnumEnhance
 
     public function description(): string
     {
-        return Str::of($this->name)->replace('_', ' ')->lower();
+        $localizationKey = Config::get('enum.localization.key').'.'.static::class;
+
+        return Lang::has($localizationKey) ? Lang::get($localizationKey) : Str::of($this->name)->replace('_', ' ')->lower();
     }
 
     public function is(\BackedEnum $enum): bool
@@ -37,7 +41,7 @@ trait EnumEnhance
 
     public function isNot(\BackedEnum $enum): bool
     {
-        return ! $this->is($enum);
+        return !$this->is($enum);
     }
 
     public function isAny(array $enums): bool
@@ -65,25 +69,25 @@ trait EnumEnhance
         return in_array($value, static::values(), $strict);
     }
 
-    public static function fromName(string $name)
+    public static function fromName(string $name): static
     {
-        if (! self::hasName($name)) {
+        if (!static::hasName($name)) {
             throw new \ValueError("$name is not a valid backing name for enum \"".static::class.'"');
         }
 
-        return head(array_filter(self::cases(), fn (\BackedEnum $enum) => $enum->name === $name));
+        return head(array_filter(static::cases(), fn(\BackedEnum $enum) => $enum->name === $name));
     }
 
-    public static function fromValue(int|string $value)
+    public static function fromValue(int|string $value): static
     {
-        if (! self::hasValue($value)) {
+        if (!static::hasValue($value)) {
             throw new \ValueError("$value is not a valid backing value for enum \"".static::class.'"');
         }
 
-        return head(array_filter(self::cases(), fn (\BackedEnum $enum) => $enum->value === $value));
+        return head(array_filter(static::cases(), fn(\BackedEnum $enum) => $enum->value === $value));
     }
 
-    public static function guess(int|string $key)
+    public static function guess(int|string $key): static
     {
         return match (true) {
             static::hasName($key) => static::fromName($key),
@@ -94,7 +98,7 @@ trait EnumEnhance
 
     public static function toArray(): array
     {
-        return array_map(fn (\BackedEnum $item) => [
+        return array_map(fn(\BackedEnum $item) => [
             'name' => $item->name,
             'value' => $item->value,
             'description' => $item->description(),
