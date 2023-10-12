@@ -3,6 +3,7 @@
 namespace Jiannei\Enum\Laravel\Console\Commands;
 
 use Illuminate\Console\GeneratorCommand;
+use Illuminate\Support\Facades\File;
 
 class MakeEnumCommand extends GeneratorCommand
 {
@@ -15,7 +16,9 @@ class MakeEnumCommand extends GeneratorCommand
 
     protected function getStub()
     {
-        return base_path("stubs/enum/{$this->option('type')}.stub");
+        $stubPath = base_path("stubs/enum/{$this->option('type')}.stub");
+
+        return File::exists($stubPath) ? $stubPath : dirname(__DIR__, 3)."/stubs/enum/{$this->option('type')}.stub";
     }
 
     protected function getDefaultNamespace($rootNamespace)
