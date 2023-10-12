@@ -1,8 +1,16 @@
 <?php
 
+/*
+ * This file is part of the Jiannei/laravel-enum.
+ *
+ * (c) Jiannei <longjian.huang@foxmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Jiannei\Enum\Laravel\Support\Traits;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 trait EnumEnhance
@@ -29,7 +37,7 @@ trait EnumEnhance
 
     public function isNot(\BackedEnum $enum): bool
     {
-        return !$this->is($enum);
+        return ! $this->is($enum);
     }
 
     public function isAny(array $enums): bool
@@ -59,20 +67,20 @@ trait EnumEnhance
 
     public static function fromName(string $name)
     {
-        if (!self::hasName($name)) {
-            throw new \ValueError("$name is not a valid backing name for enum \"".static::class."\"");
+        if (! self::hasName($name)) {
+            throw new \ValueError("$name is not a valid backing name for enum \"".static::class.'"');
         }
 
-        return head(array_filter(self::cases(), fn(\BackedEnum $enum) => $enum->name === $name));
+        return head(array_filter(self::cases(), fn (\BackedEnum $enum) => $enum->name === $name));
     }
 
     public static function fromValue(int|string $value)
     {
-        if (!self::hasValue($value)) {
-            throw new \ValueError("$value is not a valid backing value for enum \"".static::class."\"");
+        if (! self::hasValue($value)) {
+            throw new \ValueError("$value is not a valid backing value for enum \"".static::class.'"');
         }
 
-        return head(array_filter(self::cases(), fn(\BackedEnum $enum) => $enum->value === $value));
+        return head(array_filter(self::cases(), fn (\BackedEnum $enum) => $enum->value === $value));
     }
 
     public static function guess(int|string $key)
@@ -80,13 +88,13 @@ trait EnumEnhance
         return match (true) {
             static::hasName($key) => static::fromName($key),
             static::hasValue($key) => static::fromValue($key),
-            default => throw new \ValueError("$key is illegal for enum \"".static::class."\"")
+            default => throw new \ValueError("$key is illegal for enum \"".static::class.'"')
         };
     }
 
     public static function toArray(): array
     {
-        return array_map(fn(\BackedEnum $item) => [
+        return array_map(fn (\BackedEnum $item) => [
             'name' => $item->name,
             'value' => $item->value,
             'description' => $item->description(),
