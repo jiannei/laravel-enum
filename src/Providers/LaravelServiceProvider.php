@@ -29,7 +29,7 @@ class LaravelServiceProvider extends ServiceProvider
             $this->publishes([$path => config_path('enum.php')], 'config');
 
             $this->publishes([
-                dirname(__DIR__,2) . '/stubs' => $this->app->basePath('stubs'),
+                dirname(__DIR__, 2).'/stubs' => $this->app->basePath('stubs'),
             ], 'stubs');
 
             $this->commands([
