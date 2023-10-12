@@ -1,221 +1,197 @@
 <?php
 
-/*
- * This file is part of the Jiannei/laravel-enum.
- *
- * (c) Jiannei <longjian.huang@foxmail.com>
- *
- * This source file is subject to the MIT license that is bundled
- * with this source code in the file LICENSE.
- */
-
-namespace Jiannei\Enum\Laravel\Tests;
-
+uses(\Jiannei\Enum\Laravel\Tests\TestCase::class);
 use Jiannei\Enum\Laravel\Tests\Enums\SuperPowersEnum;
 
-class FlaggedEnumTest extends TestCase
+
+test('can construct flagged enum using static properties', function () {
+    // 实例化 Flagged 常量对象的几种方式
+    // 方式一：new
+    $powers1 = new SuperPowersEnum([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT, SuperPowersEnum::LASER_VISION]);
+    // 传入包含「常量值」的数组
+    expect($powers1)->toBeInstanceOf(SuperPowersEnum::class);
+
+    $powers2 = new SuperPowersEnum(SuperPowersEnum::STRENGTH);
+    // 传入单个「常量值」
+    expect($powers2)->toBeInstanceOf(SuperPowersEnum::class);
+
+    // 方式二：fromValue
+    $powers3 = SuperPowersEnum::fromValue([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT, SuperPowersEnum::LASER_VISION]);
+    // 传入包含「常量值」的数组
+    expect($powers3)->toBeInstanceOf(SuperPowersEnum::class);
+
+    $powers4 = SuperPowersEnum::fromValue(SuperPowersEnum::FLIGHT);
+    // 传入单个「常量值」
+    expect($powers4)->toBeInstanceOf(SuperPowersEnum::class);
+
+    // 方式三：flags
+    $powers5 = SuperPowersEnum::flags([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT, SuperPowersEnum::LASER_VISION]);
+    // 传入包含「常量值」的数组
+    expect($powers5)->toBeInstanceOf(SuperPowersEnum::class);
+
+    // 方式四：fromKey
+    $powers6 = SuperPowersEnum::fromKey('immortality', false);
+    // 传入单个「常量名称」
+    expect($powers6)->toBeInstanceOf(SuperPowersEnum::class);
+
+    // 方式五：magic
+    $powers7 = SuperPowersEnum::TIME_TRAVEL();
+    expect($powers7)->toBeInstanceOf(SuperPowersEnum::class);
+
+    // 方式六：make
+    $powers8 = SuperPowersEnum::make(SuperPowersEnum::SUPERMAN);
+    expect($powers8)->toBeInstanceOf(SuperPowersEnum::class);
+});
+
+test('can construct flagged enum using instances', function () {
+    // 实例化 Flagged 常量对象的几种方式
+    $powers = new SuperPowersEnum([SuperPowersEnum::STRENGTH(), SuperPowersEnum::FLIGHT(), SuperPowersEnum::LASER_VISION()]);
+    expect($powers)->toBeInstanceOf(SuperPowersEnum::class);
+
+    $powers = SuperPowersEnum::fromValue([SuperPowersEnum::STRENGTH(), SuperPowersEnum::FLIGHT(), SuperPowersEnum::LASER_VISION()]);
+    expect($powers)->toBeInstanceOf(SuperPowersEnum::class);
+
+    $powers = SuperPowersEnum::flags([SuperPowersEnum::STRENGTH(), SuperPowersEnum::FLIGHT(), SuperPowersEnum::LASER_VISION()]);
+    expect($powers)->toBeInstanceOf(SuperPowersEnum::class);
+});
+
+test('can check if instance has flag', function () {
+    // 检查 FlaggedEnum 是否包含「某个」常量标记
+    $powers = new SuperPowersEnum([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT]);
+
+    expect($powers->hasFlag(SuperPowersEnum::STRENGTH()))->toBeTrue();
+    expect($powers->hasFlag(SuperPowersEnum::STRENGTH))->toBeTrue();
+    expect($powers->hasFlag(SuperPowersEnum::LASER_VISION()))->toBeFalse();
+    expect($powers->hasFlag(SuperPowersEnum::LASER_VISION))->toBeFalse();
+});
+
+test('can check if instance has flags', function () {
+    // 检查 FlaggedEnum 是否包含「多个」常量标记
+    $powers = new SuperPowersEnum([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT]);
+
+    expect($powers->hasFlags([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT]))->toBeTrue();
+    expect($powers->hasFlags([SuperPowersEnum::STRENGTH, SuperPowersEnum::INVISIBILITY]))->toBeFalse();
+});
+
+test('can check if instance does not have flag', function () {
+    // 检查 FlaggedEnum 是否不包含「某个」常量标记
+    $powers = new SuperPowersEnum([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT]);
+
+    expect($powers->notHasFlag(SuperPowersEnum::LASER_VISION()))->toBeTrue();
+    expect($powers->notHasFlag(SuperPowersEnum::LASER_VISION))->toBeTrue();
+    expect($powers->notHasFlag(SuperPowersEnum::STRENGTH()))->toBeFalse();
+    expect($powers->notHasFlag(SuperPowersEnum::STRENGTH))->toBeFalse();
+});
+
+test('can check if instance does not have flags', function () {
+    // 检查 FlaggedEnum 是否不包含「多个」常量标记
+    $powers = new SuperPowersEnum([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT]);
+
+    expect($powers->notHasFlags([SuperPowersEnum::INVISIBILITY, SuperPowersEnum::LASER_VISION]))->toBeTrue();
+    expect($powers->notHasFlags([SuperPowersEnum::STRENGTH, SuperPowersEnum::LASER_VISION]))->toBeFalse();
+    expect($powers->notHasFlags([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT]))->toBeFalse();
+});
+
+test('can set flags', function () {
+    //  往 FlaggedEnum 中添加多个标记
+    $powers = SuperPowersEnum::NONE();
+    expect($powers->hasFlag(SuperPowersEnum::LASER_VISION))->toBeFalse();
+
+    $powers->setFlags([SuperPowersEnum::LASER_VISION, SuperPowersEnum::STRENGTH]);
+    expect($powers->hasFlag(SuperPowersEnum::LASER_VISION))->toBeTrue();
+    expect($powers->hasFlag(SuperPowersEnum::STRENGTH))->toBeTrue();
+});
+
+function TestCanAddFlag()
 {
-    public function testCanConstructFlaggedEnumUsingStaticProperties()
-    {
-        // 实例化 Flagged 常量对象的几种方式
+    //  往 FlaggedEnum 中添加单个标记
+    $powers = SuperPowersEnum::NONE();
+    expect($powers->hasFlag(SuperPowersEnum::IMMORTALITY))->toBeFalse();
 
-        // 方式一：new
-        $powers1 = new SuperPowersEnum([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT, SuperPowersEnum::LASER_VISION]); // 传入包含「常量值」的数组
-        $this->assertInstanceOf(SuperPowersEnum::class, $powers1);
+    $powers->addFlag(SuperPowersEnum::IMMORTALITY);
+    expect($powers->hasFlag(SuperPowersEnum::IMMORTALITY))->toBeTrue();
 
-        $powers2 = new SuperPowersEnum(SuperPowersEnum::STRENGTH); // 传入单个「常量值」
-        $this->assertInstanceOf(SuperPowersEnum::class, $powers2);
-
-        // 方式二：fromValue
-        $powers3 = SuperPowersEnum::fromValue([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT, SuperPowersEnum::LASER_VISION]); // 传入包含「常量值」的数组
-        $this->assertInstanceOf(SuperPowersEnum::class, $powers3);
-
-        $powers4 = SuperPowersEnum::fromValue(SuperPowersEnum::FLIGHT); // 传入单个「常量值」
-        $this->assertInstanceOf(SuperPowersEnum::class, $powers4);
-
-        // 方式三：flags
-        $powers5 = SuperPowersEnum::flags([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT, SuperPowersEnum::LASER_VISION]); // 传入包含「常量值」的数组
-        $this->assertInstanceOf(SuperPowersEnum::class, $powers5);
-
-        // 方式四：fromKey
-        $powers6 = SuperPowersEnum::fromKey('immortality', false); // 传入单个「常量名称」
-        $this->assertInstanceOf(SuperPowersEnum::class, $powers6);
-
-        // 方式五：magic
-        $powers7 = SuperPowersEnum::TIME_TRAVEL();
-        $this->assertInstanceOf(SuperPowersEnum::class, $powers7);
-
-        // 方式六：make
-        $powers8 = SuperPowersEnum::make(SuperPowersEnum::SUPERMAN);
-        $this->assertInstanceOf(SuperPowersEnum::class, $powers8);
-    }
-
-    public function testCanConstructFlaggedEnumUsingInstances()
-    {
-        // 实例化 Flagged 常量对象的几种方式
-
-        $powers = new SuperPowersEnum([SuperPowersEnum::STRENGTH(), SuperPowersEnum::FLIGHT(), SuperPowersEnum::LASER_VISION()]);
-        $this->assertInstanceOf(SuperPowersEnum::class, $powers);
-
-        $powers = SuperPowersEnum::fromValue([SuperPowersEnum::STRENGTH(), SuperPowersEnum::FLIGHT(), SuperPowersEnum::LASER_VISION()]);
-        $this->assertInstanceOf(SuperPowersEnum::class, $powers);
-
-        $powers = SuperPowersEnum::flags([SuperPowersEnum::STRENGTH(), SuperPowersEnum::FLIGHT(), SuperPowersEnum::LASER_VISION()]);
-        $this->assertInstanceOf(SuperPowersEnum::class, $powers);
-    }
-
-    public function testCanCheckIfInstanceHasFlag()
-    {
-        // 检查 FlaggedEnum 是否包含「某个」常量标记
-        $powers = new SuperPowersEnum([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT]);
-
-        $this->assertTrue($powers->hasFlag(SuperPowersEnum::STRENGTH()));
-        $this->assertTrue($powers->hasFlag(SuperPowersEnum::STRENGTH));
-        $this->assertFalse($powers->hasFlag(SuperPowersEnum::LASER_VISION()));
-        $this->assertFalse($powers->hasFlag(SuperPowersEnum::LASER_VISION));
-    }
-
-    public function testCanCheckIfInstanceHasFlags()
-    {
-        // 检查 FlaggedEnum 是否包含「多个」常量标记
-        $powers = new SuperPowersEnum([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT]);
-
-        $this->assertTrue($powers->hasFlags([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT]));
-        $this->assertFalse($powers->hasFlags([SuperPowersEnum::STRENGTH, SuperPowersEnum::INVISIBILITY]));
-    }
-
-    public function testCanCheckIfInstanceDoesNotHaveFlag()
-    {
-        // 检查 FlaggedEnum 是否不包含「某个」常量标记
-        $powers = new SuperPowersEnum([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT]);
-
-        $this->assertTrue($powers->notHasFlag(SuperPowersEnum::LASER_VISION()));
-        $this->assertTrue($powers->notHasFlag(SuperPowersEnum::LASER_VISION));
-        $this->assertFalse($powers->notHasFlag(SuperPowersEnum::STRENGTH()));
-        $this->assertFalse($powers->notHasFlag(SuperPowersEnum::STRENGTH));
-    }
-
-    public function testCanCheckIfInstanceDoesNotHaveFlags()
-    {
-        // 检查 FlaggedEnum 是否不包含「多个」常量标记
-        $powers = new SuperPowersEnum([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT]);
-
-        $this->assertTrue($powers->notHasFlags([SuperPowersEnum::INVISIBILITY, SuperPowersEnum::LASER_VISION]));
-        $this->assertFalse($powers->notHasFlags([SuperPowersEnum::STRENGTH, SuperPowersEnum::LASER_VISION]));
-        $this->assertFalse($powers->notHasFlags([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT]));
-    }
-
-    public function testCanSetFlags()
-    {
-        //  往 FlaggedEnum 中添加多个标记
-        $powers = SuperPowersEnum::NONE();
-        $this->assertFalse($powers->hasFlag(SuperPowersEnum::LASER_VISION));
-
-        $powers->setFlags([SuperPowersEnum::LASER_VISION, SuperPowersEnum::STRENGTH]);
-        $this->assertTrue($powers->hasFlag(SuperPowersEnum::LASER_VISION));
-        $this->assertTrue($powers->hasFlag(SuperPowersEnum::STRENGTH));
-    }
-
-    public function TestCanAddFlag()
-    {
-        //  往 FlaggedEnum 中添加单个标记
-        $powers = SuperPowersEnum::NONE();
-        $this->assertFalse($powers->hasFlag(SuperPowersEnum::IMMORTALITY));
-
-        $powers->addFlag(SuperPowersEnum::IMMORTALITY);
-        $this->assertTrue($powers->hasFlag(SuperPowersEnum::IMMORTALITY));
-
-        $powers->addFlag(SuperPowersEnum::TELEPORTATION);
-        $this->assertTrue($powers->hasFlag(SuperPowersEnum::TELEPORTATION));
-    }
-
-    public function testCanAddFlags()
-    {
-        //  往 FlaggedEnum 中添加多个标记
-        $powers = new SuperPowersEnum(SuperPowersEnum::NONE);
-        $this->assertFalse($powers->hasFlag(SuperPowersEnum::LASER_VISION));
-
-        $powers->addFlags([SuperPowersEnum::LASER_VISION, SuperPowersEnum::STRENGTH]);
-        $this->assertTrue($powers->hasFlags([SuperPowersEnum::LASER_VISION, SuperPowersEnum::STRENGTH]));
-    }
-
-    public function testCanRemoveFlag()
-    {
-        // 移除 FlaggedEnum 中的「单个」标记
-        $powers = new SuperPowersEnum([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT]);
-        $this->assertTrue($powers->hasFlags([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT]));
-
-        $powers->removeFlag(SuperPowersEnum::STRENGTH);
-        $this->assertFalse($powers->hasFlag(SuperPowersEnum::STRENGTH));
-
-        $powers->removeFlag(SuperPowersEnum::FLIGHT);
-        $this->assertFalse($powers->hasFlag(SuperPowersEnum::FLIGHT));
-
-        $this->assertTrue($powers->is(SuperPowersEnum::NONE));
-    }
-
-    public function testCanRemoveFlags()
-    {
-        // 移除 FlaggedEnum 中的「多个」标记
-        $powers = new SuperPowersEnum([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT]);
-        $this->assertTrue($powers->hasFlags([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT]));
-
-        $powers->removeFlags([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT]);
-        $this->assertFalse($powers->hasFlags([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT]));
-
-        $this->assertTrue($powers->is(SuperPowersEnum::NONE));
-    }
-
-    public function testCanGetFlags()
-    {
-        // 获取 FlaggedEnum 中已定义的标记
-        $powers = new SuperPowersEnum([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT, SuperPowersEnum::INVISIBILITY]);
-        $flags = $powers->getFlags();
-
-        $this->assertCount(3, $flags);
-        $this->assertContainsOnlyInstancesOf(SuperPowersEnum::class, $flags);
-    }
-
-    public function testCanSetShortcutValues()
-    {
-        // FlaggedEnum 也可以通过单个常量值来实例化
-        $powers = new SuperPowersEnum(SuperPowersEnum::SUPERMAN);
-
-        $this->assertTrue($powers->hasFlag(SuperPowersEnum::STRENGTH));
-        $this->assertTrue($powers->hasFlag(SuperPowersEnum::LASER_VISION));
-        $this->assertFalse($powers->hasFlag(SuperPowersEnum::TIME_TRAVEL));
-    }
-
-    public function testShortcutValuesAreComparableToExplicitSet()
-    {
-        $powers = new SuperPowersEnum([SuperPowersEnum::STRENGTH, SuperPowersEnum::LASER_VISION, SuperPowersEnum::FLIGHT]);
-        $this->assertTrue($powers->hasFlag(SuperPowersEnum::SUPERMAN));
-
-        $powers->removeFlag(SuperPowersEnum::LASER_VISION);
-        $this->assertFalse($powers->hasFlag(SuperPowersEnum::SUPERMAN));
-    }
-
-    public function testCanCheckIfInstanceHasMultipleFlagsSet()
-    {
-        // 检查某个 FlaggedEnum 是否包含多个标记
-        $this->assertTrue(SuperPowersEnum::SUPERMAN()->hasMultipleFlags());
-        $this->assertFalse(SuperPowersEnum::STRENGTH()->hasMultipleFlags());
-        $this->assertFalse(SuperPowersEnum::NONE()->hasMultipleFlags());
-    }
-
-    public function testCanGetBitmaskForAnInstance()
-    {
-        // 获取常量对应的二进制值
-        $powers = new SuperPowersEnum([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT]);
-        $this->assertEquals(1001, $powers->getBitmask());
-
-        $this->assertEquals(1101, SuperPowersEnum::SUPERMAN()->getBitmask());
-    }
-
-    public function testCanInstantiateAFlaggedEnumFromAValueWhichHasMultipleFlagsSet()
-    {
-        $powers = new SuperPowersEnum([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT, SuperPowersEnum::LASER_VISION]);
-
-        $this->assertEquals($powers, SuperPowersEnum::fromValue($powers->value));
-    }
+    $powers->addFlag(SuperPowersEnum::TELEPORTATION);
+    expect($powers->hasFlag(SuperPowersEnum::TELEPORTATION))->toBeTrue();
 }
+
+test('can add flags', function () {
+    //  往 FlaggedEnum 中添加多个标记
+    $powers = new SuperPowersEnum(SuperPowersEnum::NONE);
+    expect($powers->hasFlag(SuperPowersEnum::LASER_VISION))->toBeFalse();
+
+    $powers->addFlags([SuperPowersEnum::LASER_VISION, SuperPowersEnum::STRENGTH]);
+    expect($powers->hasFlags([SuperPowersEnum::LASER_VISION, SuperPowersEnum::STRENGTH]))->toBeTrue();
+});
+
+test('can remove flag', function () {
+    // 移除 FlaggedEnum 中的「单个」标记
+    $powers = new SuperPowersEnum([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT]);
+    expect($powers->hasFlags([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT]))->toBeTrue();
+
+    $powers->removeFlag(SuperPowersEnum::STRENGTH);
+    expect($powers->hasFlag(SuperPowersEnum::STRENGTH))->toBeFalse();
+
+    $powers->removeFlag(SuperPowersEnum::FLIGHT);
+    expect($powers->hasFlag(SuperPowersEnum::FLIGHT))->toBeFalse();
+
+    expect($powers->is(SuperPowersEnum::NONE))->toBeTrue();
+});
+
+test('can remove flags', function () {
+    // 移除 FlaggedEnum 中的「多个」标记
+    $powers = new SuperPowersEnum([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT]);
+    expect($powers->hasFlags([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT]))->toBeTrue();
+
+    $powers->removeFlags([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT]);
+    expect($powers->hasFlags([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT]))->toBeFalse();
+
+    expect($powers->is(SuperPowersEnum::NONE))->toBeTrue();
+});
+
+test('can get flags', function () {
+    // 获取 FlaggedEnum 中已定义的标记
+    $powers = new SuperPowersEnum([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT, SuperPowersEnum::INVISIBILITY]);
+    $flags = $powers->getFlags();
+
+    expect($flags)->toHaveCount(3);
+    $this->assertContainsOnlyInstancesOf(SuperPowersEnum::class, $flags);
+});
+
+test('can set shortcut values', function () {
+    // FlaggedEnum 也可以通过单个常量值来实例化
+    $powers = new SuperPowersEnum(SuperPowersEnum::SUPERMAN);
+
+    expect($powers->hasFlag(SuperPowersEnum::STRENGTH))->toBeTrue();
+    expect($powers->hasFlag(SuperPowersEnum::LASER_VISION))->toBeTrue();
+    expect($powers->hasFlag(SuperPowersEnum::TIME_TRAVEL))->toBeFalse();
+});
+
+test('shortcut values are comparable to explicit set', function () {
+    $powers = new SuperPowersEnum([SuperPowersEnum::STRENGTH, SuperPowersEnum::LASER_VISION, SuperPowersEnum::FLIGHT]);
+    expect($powers->hasFlag(SuperPowersEnum::SUPERMAN))->toBeTrue();
+
+    $powers->removeFlag(SuperPowersEnum::LASER_VISION);
+    expect($powers->hasFlag(SuperPowersEnum::SUPERMAN))->toBeFalse();
+});
+
+test('can check if instance has multiple flags set', function () {
+    // 检查某个 FlaggedEnum 是否包含多个标记
+    expect(SuperPowersEnum::SUPERMAN()->hasMultipleFlags())->toBeTrue();
+    expect(SuperPowersEnum::STRENGTH()->hasMultipleFlags())->toBeFalse();
+    expect(SuperPowersEnum::NONE()->hasMultipleFlags())->toBeFalse();
+});
+
+test('can get bitmask for an instance', function () {
+    // 获取常量对应的二进制值
+    $powers = new SuperPowersEnum([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT]);
+    expect($powers->getBitmask())->toEqual(1001);
+
+    expect(SuperPowersEnum::SUPERMAN()->getBitmask())->toEqual(1101);
+});
+
+test('can instantiate a flagged enum from a value which has multiple flags set', function () {
+    $powers = new SuperPowersEnum([SuperPowersEnum::STRENGTH, SuperPowersEnum::FLIGHT, SuperPowersEnum::LASER_VISION]);
+
+    expect(SuperPowersEnum::fromValue($powers->value))->toEqual($powers);
+});

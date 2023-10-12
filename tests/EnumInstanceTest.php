@@ -1,106 +1,82 @@
 <?php
 
-/*
- * This file is part of the Jiannei/laravel-enum.
- *
- * (c) Jiannei <longjian.huang@foxmail.com>
- *
- * This source file is subject to the MIT license that is bundled
- * with this source code in the file LICENSE.
- */
-
-namespace Jiannei\Enum\Laravel\Tests;
-
+uses(\Jiannei\Enum\Laravel\Tests\TestCase::class);
 use Jiannei\Enum\Laravel\Exceptions\InvalidEnumKeyException;
 use Jiannei\Enum\Laravel\Exceptions\InvalidEnumValueException;
 use Jiannei\Enum\Laravel\Tests\Enums\UserTypeEnum;
 
-class EnumInstanceTest extends TestCase
-{
-    public function testCanInstantiateEnumClassWithNew()
-    {
-        // 使用 new 方式实例化常量
-        $userType = new UserTypeEnum(UserTypeEnum::ADMINISTRATOR);
-        $this->assertInstanceOf(UserTypeEnum::class, $userType);
-    }
 
-    public function testCanInstantiateEnumClassFromValue()
-    {
-        // 根据常量的值（value）来实例化常量
-        $userType = UserTypeEnum::fromValue(UserTypeEnum::ADMINISTRATOR);
-        $this->assertInstanceOf(UserTypeEnum::class, $userType);
-    }
+test('can instantiate enum class with new', function () {
+    // 使用 new 方式实例化常量
+    $userType = new UserTypeEnum(UserTypeEnum::ADMINISTRATOR);
+    expect($userType)->toBeInstanceOf(UserTypeEnum::class);
+});
 
-    public function testCanInstantiateEnumClassFromKey()
-    {
-        // 根据常量的名称（key）来实例化常量
-        $userType = UserTypeEnum::fromKey('ADMINISTRATOR');
-        $this->assertInstanceOf(UserTypeEnum::class, $userType);
-    }
+test('can instantiate enum class from value', function () {
+    // 根据常量的值（value）来实例化常量
+    $userType = UserTypeEnum::fromValue(UserTypeEnum::ADMINISTRATOR);
+    expect($userType)->toBeInstanceOf(UserTypeEnum::class);
+});
 
-    public function testAnExceptionIsThrownWhenTryingToInstantiateEnumClassWithAnInvalidEnumValue()
-    {
-        // 尝试使用不存在的常量值实例化常量时会抛出异常
-        $this->expectException(InvalidEnumValueException::class);
+test('can instantiate enum class from key', function () {
+    // 根据常量的名称（key）来实例化常量
+    $userType = UserTypeEnum::fromKey('ADMINISTRATOR');
+    expect($userType)->toBeInstanceOf(UserTypeEnum::class);
+});
 
-        UserTypeEnum::fromValue('InvalidValue');
-    }
+test('an exception is thrown when trying to instantiate enum class with an invalid enum value', function () {
+    // 尝试使用不存在的常量值实例化常量时会抛出异常
+    $this->expectException(InvalidEnumValueException::class);
 
-    public function testAnExceptionIsThrownWhenTryingToInstantiateEnumClassWithAnInvalidEnumKey()
-    {
-        // 尝试使用不存在的常量名称实例化常量时会抛出异常
-        $this->expectException(InvalidEnumKeyException::class);
+    UserTypeEnum::fromValue('InvalidValue');
+});
 
-        UserTypeEnum::fromKey('foobar');
-    }
+test('an exception is thrown when trying to instantiate enum class with an invalid enum key', function () {
+    // 尝试使用不存在的常量名称实例化常量时会抛出异常
+    $this->expectException(InvalidEnumKeyException::class);
 
-    public function testCanGetTheValueForAnEnumInstance()
-    {
-        // 通过常量实例可以获取常量的值（value）
-        $userType = UserTypeEnum::fromValue(UserTypeEnum::ADMINISTRATOR);
+    UserTypeEnum::fromKey('foobar');
+});
 
-        $this->assertEquals($userType->value, UserTypeEnum::ADMINISTRATOR);
-    }
+test('can get the value for an enum instance', function () {
+    // 通过常量实例可以获取常量的值（value）
+    $userType = UserTypeEnum::fromValue(UserTypeEnum::ADMINISTRATOR);
 
-    public function testCanGetTheKeyForAnEnumInstance()
-    {
-        // 通过常量实例可以获取常量的名称（key）
-        $userType = UserTypeEnum::fromValue(UserTypeEnum::ADMINISTRATOR);
+    expect(UserTypeEnum::ADMINISTRATOR)->toEqual($userType->value);
+});
 
-        $this->assertEquals($userType->key, UserTypeEnum::getKey(UserTypeEnum::ADMINISTRATOR));
-    }
+test('can get the key for an enum instance', function () {
+    // 通过常量实例可以获取常量的名称（key）
+    $userType = UserTypeEnum::fromValue(UserTypeEnum::ADMINISTRATOR);
 
-    public function testCanGetTheDescriptionForAnEnumInstance()
-    {
-        // 通过常量实例可以获取常量的描述（description）
-        $userType = UserTypeEnum::fromValue(UserTypeEnum::ADMINISTRATOR);
+    expect(UserTypeEnum::getKey(UserTypeEnum::ADMINISTRATOR))->toEqual($userType->key);
+});
 
-        $this->assertEquals($userType->description, UserTypeEnum::getDescription(UserTypeEnum::ADMINISTRATOR));
-    }
+test('can get the description for an enum instance', function () {
+    // 通过常量实例可以获取常量的描述（description）
+    $userType = UserTypeEnum::fromValue(UserTypeEnum::ADMINISTRATOR);
 
-    public function testCanGetEnumInstanceByCallingAnEnumKeyAsAStaticMethod()
-    {
-        // 通过静态方法来实例化常量
-        $this->assertInstanceOf(UserTypeEnum::class, UserTypeEnum::ADMINISTRATOR());
-    }
+    expect(UserTypeEnum::getDescription(UserTypeEnum::ADMINISTRATOR))->toEqual($userType->description);
+});
 
-    public function testMagicInstantiationFromInstanceMethod()
-    {
-        // 静态方法、非静态方法
-        $userType = new UserTypeEnum(UserTypeEnum::ADMINISTRATOR);
-        $this->assertInstanceOf(UserTypeEnum::class, $userType->magicInstantiationFromInstanceMethod());
-    }
+test('can get enum instance by calling an enum key as a static method', function () {
+    // 通过静态方法来实例化常量
+    expect(UserTypeEnum::ADMINISTRATOR())->toBeInstanceOf(UserTypeEnum::class);
+});
 
-    public function testAnExceptionIsThrownWhenTryingToGetEnumInstanceByCallingAnEnumKeyAsAStaticMethodWhichDoesNotExist()
-    {
-        // 通过不合法的静态方法实例化常量时将抛出异常
-        $this->expectException(InvalidEnumKeyException::class);
+test('magic instantiation from instance method', function () {
+    // 静态方法、非静态方法
+    $userType = new UserTypeEnum(UserTypeEnum::ADMINISTRATOR);
+    expect($userType->magicInstantiationFromInstanceMethod())->toBeInstanceOf(UserTypeEnum::class);
+});
 
-        UserTypeEnum::KeyWhichDoesNotExist();
-    }
+test('an exception is thrown when trying to get enum instance by calling an enum key as a static method which does not exist', function () {
+    // 通过不合法的静态方法实例化常量时将抛出异常
+    $this->expectException(InvalidEnumKeyException::class);
 
-    public function testGettingAnInstanceUsingAnInstanceReturnsAnInstance()
-    {
-        $this->assertInstanceOf(UserTypeEnum::class, UserTypeEnum::fromValue(UserTypeEnum::ADMINISTRATOR));
-    }
-}
+    UserTypeEnum::KeyWhichDoesNotExist();
+});
+
+test('getting an instance using an instance returns an instance', function () {
+    expect(UserTypeEnum::fromValue(UserTypeEnum::ADMINISTRATOR))->toBeInstanceOf(UserTypeEnum::class);
+});
