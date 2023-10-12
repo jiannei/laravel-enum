@@ -24,7 +24,7 @@ class LaravelServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            dirname(__DIR__,2) . '/stubs' => $this->app->basePath('stubs'),
+            dirname(__DIR__, 2).'/stubs' => $this->app->basePath('stubs'),
         ], 'stubs');
 
         if ($this->app->runningInConsole()) {
