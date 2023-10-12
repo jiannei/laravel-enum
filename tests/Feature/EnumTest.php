@@ -9,7 +9,6 @@
  * with this source code in the file LICENSE.
  */
 
-
 use Jiannei\Enum\Laravel\Tests\Enums\UserType;
 
 test('to array', function () {
