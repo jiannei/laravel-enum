@@ -41,7 +41,7 @@ trait EnumEnhance
 
     public function isNot(\BackedEnum $enum): bool
     {
-        return !$this->is($enum);
+        return ! $this->is($enum);
     }
 
     public function isAny(array $enums): bool
@@ -71,20 +71,20 @@ trait EnumEnhance
 
     public static function fromName(string $name): static
     {
-        if (!static::hasName($name)) {
+        if (! static::hasName($name)) {
             throw new \ValueError("$name is not a valid backing name for enum \"".static::class.'"');
         }
 
-        return head(array_filter(static::cases(), fn(\BackedEnum $enum) => $enum->name === $name));
+        return head(array_filter(static::cases(), fn (\BackedEnum $enum) => $enum->name === $name));
     }
 
     public static function fromValue(int|string $value): static
     {
-        if (!static::hasValue($value)) {
+        if (! static::hasValue($value)) {
             throw new \ValueError("$value is not a valid backing value for enum \"".static::class.'"');
         }
 
-        return head(array_filter(static::cases(), fn(\BackedEnum $enum) => $enum->value === $value));
+        return head(array_filter(static::cases(), fn (\BackedEnum $enum) => $enum->value === $value));
     }
 
     public static function guess(int|string $key): static
@@ -98,7 +98,7 @@ trait EnumEnhance
 
     public static function toArray(): array
     {
-        return array_map(fn(\BackedEnum $item) => [
+        return array_map(fn (\BackedEnum $item) => [
             'name' => $item->name,
             'value' => $item->value,
             'description' => $item->description(),
