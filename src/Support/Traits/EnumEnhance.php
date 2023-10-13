@@ -26,7 +26,7 @@ trait EnumEnhance
         return $this->value;
     }
 
-    public function description(string $localizationGroup = '*'): string
+    public function description(string $localizationGroup = 'enums'): string
     {
         $key = "$localizationGroup.".static::class.'.'.$this->value;
 
@@ -95,7 +95,7 @@ trait EnumEnhance
         };
     }
 
-    public static function toArray(string $localizationGroup = '*'): array
+    public static function toArray(string $localizationGroup = 'enums'): array
     {
         return array_map(fn (\BackedEnum $item) => [
             'name' => $item->name,
@@ -104,7 +104,7 @@ trait EnumEnhance
         ], static::cases());
     }
 
-    public static function toSelectArray(string $localizationGroup = '*'): array
+    public static function toSelectArray(string $localizationGroup = 'enums'): array
     {
         return array_reduce(static::toArray($localizationGroup), function ($carry, $item) {
             $carry[$item['value']] = $item['description'];
