@@ -11,7 +11,6 @@
 
 namespace Jiannei\Enum\Laravel\Support\Traits;
 
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Str;
 
@@ -27,11 +26,11 @@ trait EnumEnhance
         return $this->value;
     }
 
-    public function description(): string
+    public function description(string $localizationGroup = '*'): string
     {
-        $localizationKey = Config::get('enum.localization.key').'.'.static::class;
+        $key = "$localizationGroup.".static::class.'.'.$this->value;
 
-        return Lang::has($localizationKey) ? Lang::get($localizationKey) : Str::of($this->name)->replace('_', ' ')->lower();
+        return Lang::has($key) ? Lang::get($key) : Str::of($this->name)->replace('_', ' ')->lower();
     }
 
     public function is(\BackedEnum $enum): bool
@@ -96,18 +95,18 @@ trait EnumEnhance
         };
     }
 
-    public static function toArray(): array
+    public static function toArray(string $localizationGroup = '*'): array
     {
         return array_map(fn (\BackedEnum $item) => [
             'name' => $item->name,
             'value' => $item->value,
-            'description' => $item->description(),
+            'description' => $item->description($localizationGroup),
         ], static::cases());
     }
 
-    public static function toSelectArray(): array
+    public static function toSelectArray(string $localizationGroup = '*'): array
     {
-        return array_reduce(static::toArray(), function ($carry, $item) {
+        return array_reduce(static::toArray($localizationGroup), function ($carry, $item) {
             $carry[$item['value']] = $item['description'];
 
             return $carry;

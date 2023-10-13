@@ -18,17 +18,25 @@ test('to array', function () {
         ])
         ->and(UserType::values())->toBeArray()->toMatchArray([0, 1, 2])
         ->and(UserType::toArray())->toBeArray()->toMatchArray([
-            ['name' => 'ADMINISTRATOR', 'value' => 0, 'description' => 'administrator'],
-            ['name' => 'MODERATOR', 'value' => 1, 'description' => 'moderator'],
-            ['name' => 'SUBSCRIBER', 'value' => 2, 'description' => 'subscriber'],
+            ['name' => 'ADMINISTRATOR', 'value' => 0, 'description' => '管理员'],
+            ['name' => 'MODERATOR', 'value' => 1, 'description' => '监督员'],
+            ['name' => 'SUBSCRIBER', 'value' => 2, 'description' => '订阅用户'],
         ]);
 });
 
 test('to select array', function () {
     expect(UserType::toSelectArray())->toMatchArray([
-        0 => 'administrator',
-        1 => 'moderator',
-        2 => 'subscriber',
+        0 => '管理员',
+        1 => '监督员',
+        2 => '订阅用户',
+    ]);
+});
+
+test('specify localization group', function () {
+    expect(UserType::toSelectArray('enums'))->toMatchArray([
+        0 => '管理员',
+        1 => '主持人',
+        2 => '订阅用户',
     ]);
 });
 

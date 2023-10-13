@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-// uses(Tests\TestCase::class)->in('Feature');
+ uses(\Jiannei\Enum\Laravel\Tests\TestCase::class)->in('Feature');
 
 /*
 |--------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 {
-    "name": "jiannei\/laravel-enum",
+    "name": "jiannei/laravel-enum",
     "description": "A simple and easy-to-use enumeration extension package to help you manage enumerations in your project more conveniently, supporting Laravel and Lumen",
     "license": "MIT",
     "authors": [
@@ -14,7 +14,6 @@
     },
     "require-dev": {
         "orchestra/testbench": "^8.0",
-        "phpunit/phpunit": "^10.0",
         "pestphp/pest": "^2.23"
     },
     "autoload": {

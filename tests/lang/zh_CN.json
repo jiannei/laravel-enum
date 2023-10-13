@@ -1,0 +1,7 @@
+{
+  "Jiannei\\Enum\\Laravel\\Tests\\Enums\\UserType": {
+    "0": "管理员",
+    "1": "监督员",
+    "2": "订阅用户"
+  }
+}

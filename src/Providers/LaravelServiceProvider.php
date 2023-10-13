@@ -18,16 +18,7 @@ class LaravelServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->setupConfig();
-    }
-
-    protected function setupConfig()
-    {
-        $path = dirname(__DIR__, 2).'/config/enum.php';
-
         if ($this->app->runningInConsole()) {
-            $this->publishes([$path => config_path('enum.php')], 'config');
-
             $this->publishes([
                 dirname(__DIR__, 2).'/stubs' => $this->app->basePath('stubs'),
             ], 'stubs');
@@ -36,7 +27,5 @@ class LaravelServiceProvider extends ServiceProvider
                 MakeEnumCommand::class,
             ]);
         }
-
-        $this->mergeConfigFrom($path, 'enum');
     }
 }

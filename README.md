@@ -19,9 +19,8 @@ php8.1 版本后内置枚举支持，更多信息可以查看：https://www.php.
 
 ## 概览
 
-- 扩展原生的 BackedEnum
+- 扩展原生的 BackedEnum，支持多语言描述
 - 提供更多种实用的方式来实例化枚举、枚举 name、value 取值
-- 支持多语言本地化描述
 - 提供了便捷的比较方法`is`、`isNot`和`in`，用于枚举实例之间的对比
 
 ## 安装
@@ -32,41 +31,16 @@ php8.1 版本后内置枚举支持，更多信息可以查看：https://www.php.
 $ composer require jiannei/laravel-enum -vvv
 ```
 
-### 配置项说明
-
-```php
-// config/enum.php
-
-return [
-    'localization' => [
-        'key' => env('ENUM_LOCALIZATION_KEY', 'enums'),// 语言包的文件名。如果 APP_LOCALE=zh_CN，则这里对应 resources/lang/zh_CN/enums.php
-    ],
-];
-
-```
 
 ### Laravel
 
-- 发布配置文件
+- 发布资源文件
 
 ```shell
 $ php artisan vendor:publish --provider="Jiannei\Enum\Laravel\Providers\LaravelServiceProvider"
 ```
 
 ### Lumen
-
-- 复制配置文件到 `vendor/jiannei/laravel-enum/config/enum.php`，到 `config/enum.php`
-
-```bash
-cp vendor/jiannei/laravel-enum/config/enum.php config/enum.php
-```
-
-- 加载配置
-
-```php
-// bootstrap/app.php
-$app->configure('enum');
-```
 
 - 注册服务容器
 
@@ -112,17 +86,6 @@ $names = UserTypeEnum::names();// ['ADMINISTRATOR', 'MODERATOR', 'SUBSCRIBER']
 $values = UserTypeEnum::values();// [0, 1, 2]
 ```
 
-- 本地化描述
-
-```php
-
-// 1. 不存在语言包的情况，返回较为友好的英文描述
-
-// 2. 在 resource/lang/zh_CN/enums.php 中定义枚举与描述的对应关系（enums.php 文件名称可以在 config/enum.php 文件中配置）
-
-
-```
-
 - 枚举校验
 
 ```php
@@ -165,9 +128,13 @@ $array = UserTypeEnum::toSelectArray();// 支持多语言配置
 
 ### 枚举转换和校验
 
+- https://laravel.com/docs/10.x/requests#retrieving-enum-input-values
+- https://laravel.com/docs/10.x/validation#rule-enum
+
 
 ### Model 中的枚举转换
 
+- https://laravel.com/docs/10.x/eloquent-mutators#enum-casting
 
 ## License
 

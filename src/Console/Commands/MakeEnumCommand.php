@@ -16,9 +16,9 @@ use Illuminate\Support\Facades\File;
 
 class MakeEnumCommand extends GeneratorCommand
 {
-    protected $signature = 'make:enum {name} {--type=default}';
+    protected $signature = 'make:enum {name} {--type=int}';
 
-    protected $description = 'Create a backed enum.';
+    protected $description = 'Create a backed enum';
 
     protected $type = 'Enum';
 

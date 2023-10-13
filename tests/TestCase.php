@@ -11,8 +11,8 @@
 
 namespace Jiannei\Enum\Laravel\Tests;
 
-use Illuminate\Http\Request;
 use Jiannei\Enum\Laravel\Providers\LaravelServiceProvider;
+use Illuminate\Contracts\Config\Repository;
 
 abstract class TestCase extends \Orchestra\Testbench\TestCase
 {
@@ -27,16 +27,14 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
     {
         $app['path.lang'] = __DIR__.'/lang';
 
-        $app['config']->set('database.default', 'sqlite');
-
-        $app['config']->set('database.connections.sqlite', [
-            'driver' => 'sqlite',
-            'database' => ':memory:',
-            'prefix' => '',
-        ]);
-
-        $app['router']->any('test/enums', function (Request $request) {
-            return $request->all();
+        tap($app['config'], function (Repository $config) {
+            $config->set('app.locale', 'zh_CN');
+            $config->set('database.default', 'sqlite');
+            $config->set('database.connections.sqlite', [
+                'driver' => 'sqlite',
+                'database' => ':memory:',
+                'prefix' => '',
+            ]);
         });
     }
 }
