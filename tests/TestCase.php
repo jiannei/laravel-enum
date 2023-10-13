@@ -11,8 +11,8 @@
 
 namespace Jiannei\Enum\Laravel\Tests;
 
-use Jiannei\Enum\Laravel\Providers\LaravelServiceProvider;
 use Illuminate\Contracts\Config\Repository;
+use Jiannei\Enum\Laravel\Providers\LaravelServiceProvider;
 
 abstract class TestCase extends \Orchestra\Testbench\TestCase
 {
