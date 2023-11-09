@@ -2,7 +2,7 @@
 
 namespace DummyNamespace;
 
-Enum DummyClass:int
+enum DummyClass:int
 {
    case Foo = 0;
 }

@@ -2,7 +2,7 @@
 
 namespace DummyNamespace;
 
-Enum DummyClass:string
+enum DummyClass:string
 {
    case Foo = 'foo';
 }
