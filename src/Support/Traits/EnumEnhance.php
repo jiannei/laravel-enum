@@ -28,7 +28,7 @@ trait EnumEnhance
 
     public function description(string $localizationGroup = 'enums'): string
     {
-        $key = "$localizationGroup.".static::class.'.'.$this->value;
+        $key = "$localizationGroup.".static::class.'.'.$this->name;
 
         return Lang::has($key) ? Lang::get($key) : Str::of($this->name)->replace('_', ' ')->lower();
     }
