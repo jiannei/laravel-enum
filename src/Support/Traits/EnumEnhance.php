@@ -3,7 +3,7 @@
 /*
  * This file is part of the Jiannei/laravel-enum.
  *
- * (c) Jiannei <longjian.huang@foxmail.com>
+ * (c) Jiannei <jiannei@sinan.fun>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -40,7 +40,7 @@ trait EnumEnhance
 
     public function isNot(\BackedEnum $enum): bool
     {
-        return ! $this->is($enum);
+        return !$this->is($enum);
     }
 
     public function isAny(array $enums): bool
@@ -70,7 +70,7 @@ trait EnumEnhance
 
     public static function fromName(string $name): static
     {
-        if (! static::hasName($name)) {
+        if (!static::hasName($name)) {
             throw new \ValueError("$name is not a valid backing name for enum \"".static::class.'"');
         }
 
@@ -79,7 +79,7 @@ trait EnumEnhance
 
     public static function fromValue(int|string $value): static
     {
-        if (! static::hasValue($value)) {
+        if (!static::hasValue($value)) {
             throw new \ValueError("$value is not a valid backing value for enum \"".static::class.'"');
         }
 
