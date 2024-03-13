@@ -1,8 +1,0 @@
-<?php
-
-namespace DummyNamespace;
-
-enum DummyClass:string
-{
-   case Foo = 'foo';
-}

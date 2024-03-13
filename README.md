@@ -26,7 +26,7 @@ php8.1 版本后内置枚举支持，更多信息可以查看：https://www.php.
 
 ## 安装
 
-支持 Laravel 10/Lumen 10 以上版本：
+支持 Laravel 10 以上版本：
 
 ```shell
 $ composer require jiannei/laravel-enum -vvv
@@ -129,13 +129,13 @@ $array = UserTypeEnum::toSelectArray();// 支持多语言配置
 
 ### 枚举转换和校验
 
-- https://laravel.com/docs/10.x/requests#retrieving-enum-input-values
-- https://laravel.com/docs/10.x/validation#rule-enum
+- https://laravel.com/docs/11.x/requests#retrieving-enum-input-values
+- https://laravel.com/docs/11.x/validation#rule-enum
 
 
 ### Model 中的枚举转换
 
-- https://laravel.com/docs/10.x/eloquent-mutators#enum-casting
+- https://laravel.com/docs/11.x/eloquent-mutators#enum-casting
 
 ## License
 
