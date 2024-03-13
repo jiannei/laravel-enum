@@ -26,13 +26,6 @@
             "Jiannei\\Enum\\Laravel\\Tests\\": "tests"
         }
     },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Jiannei\\Enum\\Laravel\\Providers\\LaravelServiceProvider"
-            ]
-        }
-    },
     "minimum-stability": "dev",
     "prefer-stable" : true,
     "config": {
