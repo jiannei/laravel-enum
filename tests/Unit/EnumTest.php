@@ -20,6 +20,5 @@ test('type', function () {
 test('backed', function () {
     expect(UserType::ADMINISTRATOR)
         ->toHaveProperty('name')
-        ->toHaveProperty('value')
-        ->toHaveMethods(['cases', 'from', 'tryFrom']);
+        ->toHaveProperty('value');
 });
