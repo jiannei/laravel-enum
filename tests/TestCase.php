@@ -12,17 +12,9 @@
 namespace Jiannei\Enum\Laravel\Tests;
 
 use Illuminate\Contracts\Config\Repository;
-use Jiannei\Enum\Laravel\Providers\LaravelServiceProvider;
 
 abstract class TestCase extends \Orchestra\Testbench\TestCase
 {
-    protected function getPackageProviders($app)
-    {
-        return [
-            LaravelServiceProvider::class,
-        ];
-    }
-
     protected function getEnvironmentSetUp($app)
     {
         $app['path.lang'] = __DIR__.'/lang';

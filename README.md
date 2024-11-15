@@ -5,10 +5,10 @@
 
 ![Test](https://github.com/Jiannei/laravel-enum/workflows/Test/badge.svg?branch=main)
 [![StyleCI](https://github.styleci.io/repos/316907996/shield?branch=main)](https://github.styleci.io/repos/316907996?branch=main)
-[![Latest Stable Version](http://poser.pugx.org/jiannei/laravel-enum/v)](https://packagist.org/packages/jiannei/laravel-enum) 
-[![Total Downloads](http://poser.pugx.org/jiannei/laravel-enum/downloads)](https://packagist.org/packages/jiannei/laravel-enum)
-[![Monthly Downloads](http://poser.pugx.org/jiannei/laravel-enum/d/monthly)](https://packagist.org/packages/jiannei/laravel-enum)
-[![License](http://poser.pugx.org/jiannei/laravel-enum/license)](https://packagist.org/packages/jiannei/laravel-enum)
+[![Latest Stable Version](https://poser.pugx.org/jiannei/laravel-enum/v)](https://packagist.org/packages/jiannei/laravel-enum) 
+[![Total Downloads](https://poser.pugx.org/jiannei/laravel-enum/downloads)](https://packagist.org/packages/jiannei/laravel-enum)
+[![Monthly Downloads](https://poser.pugx.org/jiannei/laravel-enum/d/monthly)](https://packagist.org/packages/jiannei/laravel-enum)
+[![License](https://poser.pugx.org/jiannei/laravel-enum/license)](https://packagist.org/packages/jiannei/laravel-enum)
 
 ## 介绍
 
@@ -30,23 +30,6 @@ php8.1 版本后内置枚举支持，更多信息可以查看：https://www.php.
 
 ```shell
 $ composer require jiannei/laravel-enum -vvv
-```
-
-
-### Laravel
-
-- 发布资源文件
-
-```shell
-$ php artisan vendor:publish --provider="Jiannei\Enum\Laravel\Providers\LaravelServiceProvider"
-```
-
-### Lumen
-
-- 注册服务容器
-
-```php
-$app->register(\Jiannei\Enum\Laravel\Providers\LumenServiceProvider::class);
 ```
 
 ## 使用

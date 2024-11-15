@@ -8,10 +8,6 @@
             "email": "longjian.huang@foxmail.com"
         }
     ],
-    "require": {
-        "ext-json": "*",
-        "jiannei/helpers": "^0.2.1"
-    },
     "require-dev": {
         "orchestra/testbench": "^8.0",
         "pestphp/pest": "^2.23"
@@ -25,6 +21,9 @@
         "psr-4": {
             "Jiannei\\Enum\\Laravel\\Tests\\": "tests"
         }
+    },
+    "scripts": {
+        "test": "vendor/bin/pest"
     },
     "minimum-stability": "dev",
     "prefer-stable" : true,
