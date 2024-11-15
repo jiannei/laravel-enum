@@ -29,7 +29,7 @@ trait EnumEnhance
     public function description(string $localizationGroup = 'enums'): string
     {
         $name = (version_compare(app()->version(), '11.0.0', '>=') ? $this->value : $this->name);
-        $key = sprintf("%s.%s.%s", $localizationGroup, static::class, $name);
+        $key = sprintf('%s.%s.%s', $localizationGroup, static::class, $name);
 
         return Lang::has($key) ? Lang::get($key) : Str::of($this->name)->replace('_', ' ')->lower();
     }
