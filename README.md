@@ -3,7 +3,7 @@
 > A simple and easy-to-use enumeration extension package to help you manage enumerations in your project more conveniently, supporting Laravel and Lumen.
 > - 一个简单好用的枚举扩展包，帮助你更方便地管理项目中的枚举，支持 Laravel 和 Lumen。
 
-![Test](https://github.com/Jiannei/laravel-enum/workflows/Test/badge.svg?branch=main)
+[![Test](https://github.com/jiannei/laravel-enum/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/jiannei/laravel-enum/actions/workflows/test.yml)
 [![StyleCI](https://github.styleci.io/repos/316907996/shield?branch=main)](https://github.styleci.io/repos/316907996?branch=main)
 [![Latest Stable Version](https://poser.pugx.org/jiannei/laravel-enum/v)](https://packagist.org/packages/jiannei/laravel-enum) 
 [![Total Downloads](https://poser.pugx.org/jiannei/laravel-enum/downloads)](https://packagist.org/packages/jiannei/laravel-enum)
@@ -61,45 +61,48 @@ enum UserType: int
 
 ```php
 // 获取枚举的值
-UserTypeEnum::ADMINISTRATOR->value;// 0
+UserType::ADMINISTRATOR->value;// 0
 
 // 获取所有已定义枚举的名称
-$names = UserTypeEnum::names();// ['ADMINISTRATOR', 'MODERATOR', 'SUBSCRIBER']
+$names = UserType::names();// ['ADMINISTRATOR', 'MODERATOR', 'SUBSCRIBER']
 
 // 获取所有已定义枚举的值
-$values = UserTypeEnum::values();// [0, 1, 2]
+$values = UserType::values();// [0, 1, 2]
 ```
 
 - 枚举校验
 
 ```php
 // 检查定义的枚举中是否包含某个「枚举值」
-UserTypeEnum::hasValue(1);// true
-UserTypeEnum::hasValue(-1);// false
+UserType::hasValue(1);// true
+UserType::hasValue(-1);// false
 
 // 检查定义的枚举中是否包含某个「枚举名称」 
 
-UserTypeEnum::hasName('MODERATOR');// true
-UserTypeEnum::hasName('ADMIN');// false
+UserType::hasName('MODERATOR');// true
+UserType::hasName('ADMIN');// false
 ```
 
 - 枚举实例化：枚举实例化以后可以方便地通过对象实例访问枚举的 key、value 以及 description 属性的值。
 
 ```php
+UserType::fromValue(0) // 通过 value 实例化
 
+UserType::fromName('ADMINISTRATOR') // 通过 name 实例化
+
+UserType::guess(2) // 通过 name/value 猜测
 ```
 
 - toArray
 
 ```php
-$array = UserTypeEnum::toArray();
-
+$array = UserType::toArray();
 ```
 
 - toSelectArray
 
 ```php
-$array = UserTypeEnum::toSelectArray();// 支持多语言配置
+$array = UserType::toSelectArray();// 支持多语言配置
 
 /*
 [
