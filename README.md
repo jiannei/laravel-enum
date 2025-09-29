@@ -8,8 +8,6 @@
 [![Laravel Pint](https://img.shields.io/badge/Laravel%20Pint-Enabled-brightgreen?style=flat&logo=laravel)](https://laravel.com/docs/pint)
 [![Pest](https://img.shields.io/badge/Pest-Enabled-brightgreen?style=flat&logo=php)](https://pestphp.com)
 [![PHPStan](https://img.shields.io/badge/PHPStan-Level%208-brightgreen?style=flat&logo=php)](https://phpstan.org)
-[![PHP Version](https://img.shields.io/badge/PHP-8.2%2B-blue?style=flat&logo=php)](https://php.net)
-[![Laravel](https://img.shields.io/badge/Laravel-10%7C11%7C12-red?style=flat&logo=laravel)](https://laravel.com)
 [![Latest Stable Version](https://poser.pugx.org/jiannei/laravel-enum/v)](https://packagist.org/packages/jiannei/laravel-enum) 
 [![Total Downloads](https://poser.pugx.org/jiannei/laravel-enum/downloads)](https://packagist.org/packages/jiannei/laravel-enum)
 [![Monthly Downloads](https://poser.pugx.org/jiannei/laravel-enum/d/monthly)](https://packagist.org/packages/jiannei/laravel-enum)

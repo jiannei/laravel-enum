@@ -62,7 +62,7 @@ trait EnumEnhance
 
     /**
      * Get enum cases
-     * 
+     *
      * @return array<static>
      */
     private static function getCases(): array
@@ -114,7 +114,7 @@ trait EnumEnhance
         $valueType = $property === 'name' ? 'name' : 'backing value';
 
         $valueString = is_scalar($value) ? (string) $value : gettype($value);
-        
+
         throw new \ValueError(sprintf(
             'Invalid enum %s "%s" for %s. Valid %ss are: %s',
             $valueType,
@@ -214,7 +214,7 @@ trait EnumEnhance
         $cases = static::getCases();
         $currentIndex = array_search($this, $cases, true);
 
-        if ($currentIndex === false || !is_int($currentIndex) || $currentIndex === count($cases) - 1) {
+        if ($currentIndex === false || ! is_int($currentIndex) || $currentIndex === count($cases) - 1) {
             return null;
         }
 
@@ -229,7 +229,7 @@ trait EnumEnhance
         $cases = static::getCases();
         $currentIndex = array_search($this, $cases, true);
 
-        if ($currentIndex === false || !is_int($currentIndex) || $currentIndex === 0) {
+        if ($currentIndex === false || ! is_int($currentIndex) || $currentIndex === 0) {
             return null;
         }
 
