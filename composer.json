@@ -26,8 +26,8 @@
     },
     "scripts": {
         "test": "vendor/bin/pest",
-        "test-coverage": "vendor/bin/pest --coverage --min=80",
-        "test-coverage-html": "vendor/bin/pest --coverage --coverage-html=coverage-html",
+        "test-coverage": "XDEBUG_MODE=coverage vendor/bin/pest --coverage --min=80",
+        "test-coverage-html": "XDEBUG_MODE=coverage vendor/bin/pest --coverage --coverage-html=coverage-html",
         "style": "vendor/bin/pint",
         "analyse": "vendor/bin/phpstan analyse"
     },

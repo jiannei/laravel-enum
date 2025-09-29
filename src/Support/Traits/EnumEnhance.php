@@ -53,11 +53,21 @@ trait EnumEnhance
     }
 
     /**
-     * @param  array<\BackedEnum>  $enums
+     * Check if this enum is any of the given enums
      */
-    public function isAny(array $enums): bool
+    public function isAny(\BackedEnum ...$enums): bool
     {
         return in_array($this, $enums);
+    }
+
+    /**
+     * Get enum cases
+     * 
+     * @return array<static>
+     */
+    private static function getCases(): array
+    {
+        return static::cases();
     }
 
     /**
@@ -65,7 +75,7 @@ trait EnumEnhance
      */
     public static function names(): array
     {
-        return array_column(static::cases(), 'name');
+        return array_column(static::getCases(), 'name');
     }
 
     /**
@@ -73,7 +83,7 @@ trait EnumEnhance
      */
     public static function values(): array
     {
-        return array_column(static::cases(), 'value');
+        return array_column(static::getCases(), 'value');
     }
 
     public static function hasName(string $name, bool $strict = false): bool
@@ -86,36 +96,43 @@ trait EnumEnhance
         return in_array($value, static::values(), $strict);
     }
 
+    /**
+     * Find enum case by property value
+     */
+    private static function findCase(string $property, mixed $value): static
+    {
+        $cases = static::getCases();
+
+        foreach ($cases as $case) {
+            if ($value === $case->$property) {
+                return $case;
+            }
+        }
+
+        // Generate helpful error message with available options
+        $availableValues = $property === 'name' ? static::names() : static::values();
+        $valueType = $property === 'name' ? 'name' : 'backing value';
+
+        $valueString = is_scalar($value) ? (string) $value : gettype($value);
+        
+        throw new \ValueError(sprintf(
+            'Invalid enum %s "%s" for %s. Valid %ss are: %s',
+            $valueType,
+            $valueString,
+            static::class,
+            $valueType,
+            implode(', ', $availableValues)
+        ));
+    }
+
     public static function fromName(string $name): static
     {
-        if (! static::hasName($name)) {
-            throw new \ValueError("$name is not a valid backing name for enum \"".static::class.'"');
-        }
-
-        $filtered = array_filter(static::cases(), fn (\BackedEnum $enum) => $enum->name === $name);
-        $result = head($filtered);
-
-        if ($result === null || ! ($result instanceof static)) {
-            throw new \ValueError("$name is not a valid backing name for enum \"".static::class.'"');
-        }
-
-        return $result;
+        return static::findCase('name', $name);
     }
 
     public static function fromValue(int|string $value): static
     {
-        if (! static::hasValue($value)) {
-            throw new \ValueError("$value is not a valid backing value for enum \"".static::class.'"');
-        }
-
-        $filtered = array_filter(static::cases(), fn (\BackedEnum $enum) => $enum->value === $value);
-        $result = head($filtered);
-
-        if ($result === null || ! ($result instanceof static)) {
-            throw new \ValueError("$value is not a valid backing value for enum \"".static::class.'"');
-        }
-
-        return $result;
+        return static::findCase('value', $value);
     }
 
     public static function guess(int|string $key): static
@@ -132,11 +149,11 @@ trait EnumEnhance
      */
     public static function toArray(string $localizationGroup = 'enums'): array
     {
-        return array_map(fn (\BackedEnum $item) => [
+        return array_map(fn ($item) => [
             'name' => $item->name,
             'value' => $item->value,
             'description' => $item->description($localizationGroup),
-        ], static::cases());
+        ], static::getCases());
     }
 
     /**
@@ -149,5 +166,73 @@ trait EnumEnhance
 
             return $carry;
         }, []);
+    }
+
+    /**
+     * Get a random enum case
+     */
+    public static function random(): static
+    {
+        $cases = static::getCases();
+
+        return $cases[array_rand($cases)];
+    }
+
+    /**
+     * Get the count of enum cases
+     */
+    public static function count(): int
+    {
+        return count(static::getCases());
+    }
+
+    /**
+     * Check if this is the first enum case
+     */
+    public function isFirst(): bool
+    {
+        $cases = static::getCases();
+
+        return $this === reset($cases);
+    }
+
+    /**
+     * Check if this is the last enum case
+     */
+    public function isLast(): bool
+    {
+        $cases = static::getCases();
+
+        return $this === end($cases);
+    }
+
+    /**
+     * Get the next enum case
+     */
+    public function next(): ?static
+    {
+        $cases = static::getCases();
+        $currentIndex = array_search($this, $cases, true);
+
+        if ($currentIndex === false || !is_int($currentIndex) || $currentIndex === count($cases) - 1) {
+            return null;
+        }
+
+        return $cases[$currentIndex + 1];
+    }
+
+    /**
+     * Get the previous enum case
+     */
+    public function previous(): ?static
+    {
+        $cases = static::getCases();
+        $currentIndex = array_search($this, $cases, true);
+
+        if ($currentIndex === false || !is_int($currentIndex) || $currentIndex === 0) {
+            return null;
+        }
+
+        return $cases[$currentIndex - 1];
     }
 }

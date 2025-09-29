@@ -34,8 +34,8 @@ jobs:
                   composer require "laravel/framework:^11.0" "orchestra/testbench:^9.0" --no-interaction --no-update
                   composer install --prefer-dist --no-interaction
 
-            - name: Execute tests with coverage
-              run: vendor/bin/pest --coverage --coverage-clover=coverage.xml
+            - name: Run tests with coverage
+              run: XDEBUG_MODE=coverage vendor/bin/pest --coverage --coverage-clover=coverage.xml
 
             - name: Upload coverage to Codecov
               uses: codecov/codecov-action@v4

@@ -9,8 +9,6 @@
  * with this source code in the file LICENSE.
  */
 
-use Pest\Coverage\CoverageReport;
-
 /*
 |--------------------------------------------------------------------------
 | Test Suites

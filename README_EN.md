@@ -26,9 +26,13 @@ Join the community discussion: [A More Elegant Way to Write APIs - Enumeration U
 
 ## Features
 
-- Extends native BackedEnum with multi-language description support
-- Provides various practical ways to instantiate enums and retrieve enum names and values
-- Offers convenient comparison methods `is`, `isNot`, and `isAny` for enum instance comparisons
+- 🌍 **Multi-language Support**: Extends native BackedEnum with multi-language description support
+- 🔧 **Instantiation Methods**: Provides various practical ways to instantiate enums (fromValue, fromName, guess, random)
+- 📊 **Data Retrieval**: Convenient access to enum name, value, names, values, count and other information
+- 🔍 **Comparison Methods**: Provides convenient comparison methods `is`, `isNot`, `isAny` for enum instance comparisons
+- 🧭 **Navigation Features**: Supports enum position checking (isFirst, isLast) and navigation (next, previous)
+- 📋 **Array Conversion**: Supports conversion to array formats, suitable for API responses and form options
+- ⚠️ **Error Handling**: Provides detailed error messages with valid value hints
 
 ## Installation
 
@@ -42,9 +46,7 @@ $ composer require jiannei/laravel-enum -vvv
 
 For more detailed usage examples, check the test cases: [https://github.com/Jiannei/laravel-enum/tree/main/tests](https://github.com/Jiannei/laravel-enum/tree/main/tests)
 
-### Basic Usage
-
-#### Definition
+### Enum Definition
 
 ```php
 <?php
@@ -63,20 +65,28 @@ enum UserType: int
 }
 ```
 
-#### Basic Operations
+### Basic Usage
+
+#### Getting Enum Names and Values
 
 ```php
-// Get enum value
-UserType::ADMINISTRATOR->value; // 0
-
 // Get all defined enum names
 $names = UserType::names(); // ['ADMINISTRATOR', 'MODERATOR', 'SUBSCRIBER']
 
 // Get all defined enum values
 $values = UserType::values(); // [0, 1, 2]
+
+// Get enum count
+$count = UserType::count(); // 3
+
+// Get enum value
+UserType::ADMINISTRATOR->value; // 0
+
+// Get enum name
+UserType::ADMINISTRATOR->name; // 'ADMINISTRATOR'
 ```
 
-#### Enum Validation
+### Enum Validation
 
 ```php
 // Check if the defined enum contains a specific "enum value"
@@ -88,19 +98,26 @@ UserType::hasName('MODERATOR'); // true
 UserType::hasName('ADMIN'); // false
 ```
 
-#### Enum Instantiation
+### Enum Instantiation
 
 After enum instantiation, you can conveniently access the enum's key, value, and description properties through the object instance.
 
 ```php
-UserType::fromValue(0) // Instantiate by value
+// Instantiate by value
+$admin = UserType::fromValue(0); // UserType::ADMINISTRATOR
 
-UserType::fromName('ADMINISTRATOR') // Instantiate by name
+// Instantiate by name
+$admin = UserType::fromName('ADMINISTRATOR'); // UserType::ADMINISTRATOR
 
-UserType::guess(2) // Guess by name/value
+// Guess by name/value (automatically determines whether it's a name or value)
+$admin = UserType::guess(0); // UserType::ADMINISTRATOR
+$admin = UserType::guess('ADMINISTRATOR'); // UserType::ADMINISTRATOR
+
+// Get random enum instance
+$random = UserType::random(); // Randomly returns one of UserType::ADMINISTRATOR, UserType::MODERATOR, UserType::SUBSCRIBER
 ```
 
-#### Comparison Methods
+### Enum Comparison
 
 ```php
 $admin = UserType::ADMINISTRATOR;
@@ -116,7 +133,31 @@ $admin->isNot(UserType::SUBSCRIBER); // true
 $admin->isAny([UserType::ADMINISTRATOR, UserType::MODERATOR]); // true
 ```
 
-#### Array Conversion
+### Position and Navigation
+
+```php
+$admin = UserType::ADMINISTRATOR;
+$moderator = UserType::MODERATOR;
+$subscriber = UserType::SUBSCRIBER;
+
+// Check if it's the first enum
+$admin->isFirst(); // true
+$moderator->isFirst(); // false
+
+// Check if it's the last enum
+$subscriber->isLast(); // true
+$moderator->isLast(); // false
+
+// Get next enum (returns null if it's the last one)
+$admin->next(); // UserType::MODERATOR
+$subscriber->next(); // null
+
+// Get previous enum (returns null if it's the first one)
+$moderator->previous(); // UserType::ADMINISTRATOR
+$admin->previous(); // null
+```
+
+### Array Conversion
 
 ```php
 // Convert to array with full information
@@ -140,7 +181,7 @@ $array = UserType::toSelectArray();
 */
 ```
 
-### Multi-language Support
+### Multi-language Description
 
 The package supports multi-language descriptions through Laravel's localization system.
 
@@ -178,14 +219,124 @@ return [
 ];
 ```
 
-#### Using Custom Localization Groups
+#### Using Descriptions
 
 ```php
-// Use custom localization group
-$array = UserType::toSelectArray('custom_group');
+// Get description (default uses 'enums' localization group)
+$description = UserType::ADMINISTRATOR->description(); // 'Administrator'
 
-// Get description with custom localization group
+// Use custom localization group
 $description = UserType::ADMINISTRATOR->description('custom_group');
+
+// Convert to select array with descriptions
+$array = UserType::toSelectArray(); // [0 => 'Administrator', 1 => 'Moderator', 2 => 'Subscriber']
+```
+
+### Error Handling
+
+When using `fromName` and `fromValue` methods with invalid parameters, detailed error messages are provided:
+
+```php
+try {
+    UserType::fromName('INVALID_NAME');
+} catch (ValueError $e) {
+    echo $e->getMessage();
+    // "INVALID_NAME" is not a valid name for enum "Jiannei\Enum\Laravel\Tests\Enums\UserType". Valid names are: ADMINISTRATOR, MODERATOR, SUBSCRIBER
+}
+
+try {
+    UserType::fromValue(999);
+} catch (ValueError $e) {
+    echo $e->getMessage();
+    // 999 is not a valid value for enum "Jiannei\Enum\Laravel\Tests\Enums\UserType". Valid values are: 0, 1, 2
+}
+```
+
+### Practical Application Examples
+
+#### In Controllers
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Enums\UserType;
+use Illuminate\Http\Request;
+
+class UserController extends Controller
+{
+    public function index(Request $request)
+    {
+        // Get user type from request
+        $userType = UserType::fromValue($request->input('type'));
+        
+        // Use enum for business logic
+        if ($userType->is(UserType::ADMINISTRATOR)) {
+            // Administrator logic
+        }
+        
+        return response()->json([
+            'user_types' => UserType::toSelectArray(),
+            'current_type' => $userType->value,
+        ]);
+    }
+}
+```
+
+#### In Models
+
+```php
+<?php
+
+namespace App\Models;
+
+use App\Enums\UserType;
+use Illuminate\Database\Eloquent\Model;
+
+class User extends Model
+{
+    protected $casts = [
+        'type' => UserType::class,
+    ];
+    
+    public function isAdmin(): bool
+    {
+        return $this->type->is(UserType::ADMINISTRATOR);
+    }
+    
+    public function canModerate(): bool
+    {
+        return $this->type->isAny([
+            UserType::ADMINISTRATOR,
+            UserType::MODERATOR,
+        ]);
+    }
+}
+```
+
+#### In Form Validation
+
+```php
+<?php
+
+namespace App\Http\Requests;
+
+use App\Enums\UserType;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+
+class CreateUserRequest extends FormRequest
+{
+    public function rules(): array
+    {
+        return [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users',
+            'type' => ['required', Rule::enum(UserType::class)],
+        ];
+    }
+}
 ```
 
 ### Laravel Integration
@@ -217,30 +368,36 @@ class User extends Model
 
 ## API Reference
 
-### Instance Methods
-
-| Method | Description | Return Type |
-|--------|-------------|-------------|
-| `name()` | Get the enum case name | `string` |
-| `value()` | Get the enum case value | `int\|string` |
-| `description($group = 'enums')` | Get localized description | `string` |
-| `is(BackedEnum $enum)` | Check if equal to another enum | `bool` |
-| `isNot(BackedEnum $enum)` | Check if not equal to another enum | `bool` |
-| `isAny(array $enums)` | Check if matches any enum in array | `bool` |
-
 ### Static Methods
 
-| Method | Description | Return Type |
+| Method | Return Type | Description |
 |--------|-------------|-------------|
-| `names()` | Get all enum case names | `array` |
-| `values()` | Get all enum case values | `array` |
-| `hasName(string $name, bool $strict = false)` | Check if name exists | `bool` |
-| `hasValue(int\|string $value, bool $strict = false)` | Check if value exists | `bool` |
-| `fromName(string $name)` | Create instance from name | `static` |
-| `fromValue(int\|string $value)` | Create instance from value | `static` |
-| `guess(int\|string $key)` | Create instance by guessing from name or value | `static` |
-| `toArray(string $group = 'enums')` | Convert to array with full info | `array` |
-| `toSelectArray(string $group = 'enums')` | Convert to select array format | `array` |
+| `names()` | `array` | Get all enum case names |
+| `values()` | `array` | Get all enum case values |
+| `count()` | `int` | Get the number of enum cases |
+| `hasName(string $name, bool $strict = false)` | `bool` | Check if name exists |
+| `hasValue(int\|string $value, bool $strict = false)` | `bool` | Check if value exists |
+| `fromName(string $name)` | `static` | Create instance from name |
+| `fromValue(int\|string $value)` | `static` | Create instance from value |
+| `guess(int\|string $key)` | `static` | Create instance by guessing from name or value |
+| `random()` | `static` | Get a random enum instance |
+| `toArray(string $group = 'enums')` | `array` | Convert to array with full info |
+| `toSelectArray(string $group = 'enums')` | `array` | Convert to select array format |
+
+### Instance Methods
+
+| Method | Return Type | Description |
+|--------|-------------|-------------|
+| `name` | `string` | Get the enum case name |
+| `value` | `int\|string` | Get the enum case value |
+| `description(string $group = 'enums')` | `string` | Get localized description |
+| `is(BackedEnum $enum)` | `bool` | Check if equal to another enum |
+| `isNot(BackedEnum $enum)` | `bool` | Check if not equal to another enum |
+| `isAny(array $enums)` | `bool` | Check if matches any enum in array |
+| `isFirst()` | `bool` | Check if it's the first enum case |
+| `isLast()` | `bool` | Check if it's the last enum case |
+| `next()` | `static\|null` | Get the next enum case (null if last) |
+| `previous()` | `static\|null` | Get the previous enum case (null if first) |
 
 ## Requirements
 
