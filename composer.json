@@ -10,9 +10,9 @@
     ],
     "require-dev": {
         "orchestra/testbench": "^8.0|^9.0|^10.0",
-        "pestphp/pest": "^4.1.0",
+        "pestphp/pest": "^2.0|^3.0",
         "laravel/pint": "^1.0",
-        "phpstan/phpstan": "^2.1"
+        "phpstan/phpstan": "^1.0|^2.0"
     },
     "autoload": {
         "psr-4": {
@@ -29,7 +29,7 @@
         "test-coverage": "XDEBUG_MODE=coverage vendor/bin/pest --coverage --min=80",
         "test-coverage-html": "XDEBUG_MODE=coverage vendor/bin/pest --coverage --coverage-html=coverage-html",
         "style": "vendor/bin/pint",
-        "analyse": "vendor/bin/phpstan analyse"
+        "analyse": "vendor/bin/phpstan analyse --memory-limit=2G"
     },
     "minimum-stability": "dev",
     "prefer-stable" : true,

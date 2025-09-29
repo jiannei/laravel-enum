@@ -86,9 +86,6 @@ jobs:
             - name: Install dependencies
               run: composer install --prefer-dist --no-interaction
 
-            - name: Install Laravel Pint
-              run: composer require laravel/pint --dev --no-interaction
-
             - name: Run Laravel Pint
               run: vendor/bin/pint --test
 
@@ -116,9 +113,6 @@ jobs:
 
             - name: Install dependencies
               run: composer install --prefer-dist --no-interaction
-
-            - name: Install PHPStan
-              run: composer require phpstan/phpstan --dev --no-interaction
 
             - name: Run PHPStan
               run: vendor/bin/phpstan analyse --memory-limit=2G
