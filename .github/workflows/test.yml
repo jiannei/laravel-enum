@@ -90,7 +90,7 @@ jobs:
               run: vendor/bin/pint --test
 
     static-analysis:
-        name: Static Analysis (PHPStan)
+        name: Static Analysis (Larastan)
         runs-on: ubuntu-latest
         steps:
             - name: Checkout code
@@ -114,5 +114,5 @@ jobs:
             - name: Install dependencies
               run: composer install --prefer-dist --no-interaction
 
-            - name: Run PHPStan
+            - name: Run Larastan
               run: vendor/bin/phpstan analyse --memory-limit=2G

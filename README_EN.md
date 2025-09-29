@@ -4,9 +4,10 @@
 
 [![Tests](https://github.com/jiannei/laravel-enum/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/jiannei/laravel-enum/actions/workflows/test.yml)
 [![Coverage](https://github.com/jiannei/laravel-enum/actions/workflows/coverage.yml/badge.svg?branch=main)](https://github.com/jiannei/laravel-enum/actions/workflows/coverage.yml)
+[![codecov](https://codecov.io/gh/jiannei/laravel-enum/branch/main/graph/badge.svg)](https://codecov.io/gh/jiannei/laravel-enum)
 [![Laravel Pint](https://img.shields.io/badge/Laravel%20Pint-Enabled-brightgreen?style=flat&logo=laravel)](https://laravel.com/docs/pint)
 [![Pest](https://img.shields.io/badge/Pest-Enabled-brightgreen?style=flat&logo=php)](https://pestphp.com)
-[![PHPStan](https://img.shields.io/badge/PHPStan-Level%208-brightgreen?style=flat&logo=php)](https://phpstan.org)
+[![Larastan](https://img.shields.io/badge/Larastan-Level%209-brightgreen?style=flat&logo=php)](https://github.com/larastan/larastan)
 [![Latest Stable Version](https://poser.pugx.org/jiannei/laravel-enum/v)](https://packagist.org/packages/jiannei/laravel-enum) 
 [![Total Downloads](https://poser.pugx.org/jiannei/laravel-enum/downloads)](https://packagist.org/packages/jiannei/laravel-enum)
 [![Monthly Downloads](https://poser.pugx.org/jiannei/laravel-enum/d/monthly)](https://packagist.org/packages/jiannei/laravel-enum)
