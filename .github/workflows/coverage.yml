@@ -31,7 +31,7 @@ jobs:
 
             - name: Install dependencies
               run: |
-                  composer require "laravel/framework:^11.0" "orchestra/testbench:^9.0" --no-interaction --no-update
+                  composer require "laravel/framework:^12.0" "orchestra/testbench:^10.0" --no-interaction --no-update
                   composer install --prefer-dist --no-interaction
 
             - name: Run tests with coverage
