@@ -2,6 +2,8 @@
 *.DS_Store
 /vendor
 /coverage
+/coverage-html
+coverage.xml
 sftp-config.json
 composer.lock
 .subsplit

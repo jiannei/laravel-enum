@@ -26,6 +26,8 @@
     },
     "scripts": {
         "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage --min=80",
+        "test-coverage-html": "vendor/bin/pest --coverage --coverage-html=coverage-html",
         "style": "vendor/bin/pint",
         "analyse": "vendor/bin/phpstan analyse"
     },
