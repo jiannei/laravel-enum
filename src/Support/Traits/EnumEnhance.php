@@ -35,9 +35,10 @@ trait EnumEnhance
             if (is_array($translation)) {
                 return '';
             }
+
             return (string) $translation;
         }
-        
+
         return (string) Str::of($this->name)->replace('_', ' ')->lower();
     }
 
@@ -52,7 +53,7 @@ trait EnumEnhance
     }
 
     /**
-     * @param array<\BackedEnum> $enums
+     * @param  array<\BackedEnum>  $enums
      */
     public function isAny(array $enums): bool
     {
@@ -93,11 +94,11 @@ trait EnumEnhance
 
         $filtered = array_filter(static::cases(), fn (\BackedEnum $enum) => $enum->name === $name);
         $result = head($filtered);
-        
-        if ($result === null || !($result instanceof static)) {
+
+        if ($result === null || ! ($result instanceof static)) {
             throw new \ValueError("$name is not a valid backing name for enum \"".static::class.'"');
         }
-        
+
         return $result;
     }
 
@@ -109,11 +110,11 @@ trait EnumEnhance
 
         $filtered = array_filter(static::cases(), fn (\BackedEnum $enum) => $enum->value === $value);
         $result = head($filtered);
-        
-        if ($result === null || !($result instanceof static)) {
+
+        if ($result === null || ! ($result instanceof static)) {
             throw new \ValueError("$value is not a valid backing value for enum \"".static::class.'"');
         }
-        
+
         return $result;
     }
 
