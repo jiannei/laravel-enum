@@ -19,14 +19,16 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
     {
         $app['path.lang'] = __DIR__.'/lang';
 
-        tap($app['config'], function (Repository $config) {
-            $config->set('app.locale', 'zh_CN');
-            $config->set('database.default', 'sqlite');
-            $config->set('database.connections.sqlite', [
-                'driver' => 'sqlite',
-                'database' => ':memory:',
-                'prefix' => '',
-            ]);
+        tap($app['config'], function (mixed $config): void {
+            if ($config instanceof Repository) {
+                $config->set('app.locale', 'zh_CN');
+                $config->set('database.default', 'sqlite');
+                $config->set('database.connections.sqlite', [
+                    'driver' => 'sqlite',
+                    'database' => ':memory:',
+                    'prefix' => '',
+                ]);
+            }
         });
     }
 }

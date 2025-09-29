@@ -30,7 +30,15 @@ trait EnumEnhance
     {
         $key = "$localizationGroup.".static::class.'.'.$this->name;
 
-        return Lang::has($key) ? Lang::get($key) : Str::of($this->name)->replace('_', ' ')->lower();
+        if (Lang::has($key)) {
+            $translation = Lang::get($key);
+            if (is_array($translation)) {
+                return '';
+            }
+            return (string) $translation;
+        }
+        
+        return (string) Str::of($this->name)->replace('_', ' ')->lower();
     }
 
     public function is(\BackedEnum $enum): bool
@@ -40,19 +48,28 @@ trait EnumEnhance
 
     public function isNot(\BackedEnum $enum): bool
     {
-        return !$this->is($enum);
+        return ! $this->is($enum);
     }
 
+    /**
+     * @param array<\BackedEnum> $enums
+     */
     public function isAny(array $enums): bool
     {
         return in_array($this, $enums);
     }
 
+    /**
+     * @return array<string>
+     */
     public static function names(): array
     {
         return array_column(static::cases(), 'name');
     }
 
+    /**
+     * @return array<int|string>
+     */
     public static function values(): array
     {
         return array_column(static::cases(), 'value');
@@ -70,31 +87,48 @@ trait EnumEnhance
 
     public static function fromName(string $name): static
     {
-        if (!static::hasName($name)) {
+        if (! static::hasName($name)) {
             throw new \ValueError("$name is not a valid backing name for enum \"".static::class.'"');
         }
 
-        return head(array_filter(static::cases(), fn (\BackedEnum $enum) => $enum->name === $name));
+        $filtered = array_filter(static::cases(), fn (\BackedEnum $enum) => $enum->name === $name);
+        $result = head($filtered);
+        
+        if ($result === null || !($result instanceof static)) {
+            throw new \ValueError("$name is not a valid backing name for enum \"".static::class.'"');
+        }
+        
+        return $result;
     }
 
     public static function fromValue(int|string $value): static
     {
-        if (!static::hasValue($value)) {
+        if (! static::hasValue($value)) {
             throw new \ValueError("$value is not a valid backing value for enum \"".static::class.'"');
         }
 
-        return head(array_filter(static::cases(), fn (\BackedEnum $enum) => $enum->value === $value));
+        $filtered = array_filter(static::cases(), fn (\BackedEnum $enum) => $enum->value === $value);
+        $result = head($filtered);
+        
+        if ($result === null || !($result instanceof static)) {
+            throw new \ValueError("$value is not a valid backing value for enum \"".static::class.'"');
+        }
+        
+        return $result;
     }
 
     public static function guess(int|string $key): static
     {
         return match (true) {
-            static::hasName($key) => static::fromName($key),
+            static::hasName((string) $key) => static::fromName((string) $key),
             static::hasValue($key) => static::fromValue($key),
             default => throw new \ValueError("$key is illegal for enum \"".static::class.'"')
         };
     }
 
+    /**
+     * @return array<array{name: string, value: int|string, description: string}>
+     */
     public static function toArray(string $localizationGroup = 'enums'): array
     {
         return array_map(fn (\BackedEnum $item) => [
@@ -104,9 +138,12 @@ trait EnumEnhance
         ], static::cases());
     }
 
+    /**
+     * @return array<int|string, string>
+     */
     public static function toSelectArray(string $localizationGroup = 'enums'): array
     {
-        return array_reduce(static::toArray($localizationGroup), function ($carry, $item) {
+        return array_reduce(static::toArray($localizationGroup), function (array $carry, array $item): array {
             $carry[$item['value']] = $item['description'];
 
             return $carry;

@@ -1,0 +1,57 @@
+name: Dependency Updates
+
+on:
+    schedule:
+        - cron: '0 0 * * 1' # Weekly on Monday
+    workflow_dispatch:
+
+jobs:
+    update-dependencies:
+        name: Update Dependencies
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: 8.3
+                  extensions: curl, mbstring, zip, pcntl, sqlite, pdo_sqlite, iconv
+                  coverage: none
+
+            - name: Cache Composer packages
+              uses: actions/cache@v4
+              with:
+                  path: vendor
+                  key: ${{ runner.os }}-php-8.3-${{ hashFiles('**/composer.lock') }}
+                  restore-keys: |
+                      ${{ runner.os }}-php-8.3-
+
+            - name: Install dependencies
+              run: composer install --prefer-dist --no-interaction
+
+            - name: Update dependencies
+              run: composer update --prefer-dist --no-interaction
+
+            - name: Run tests
+              run: vendor/bin/pest
+
+            - name: Run code style check
+              run: vendor/bin/pint --test
+
+            - name: Create Pull Request
+              uses: peter-evans/create-pull-request@v5
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  commit-message: 'chore: update dependencies'
+                  title: 'chore: update dependencies'
+                  body: |
+                      This PR updates the project dependencies to their latest versions.
+                      
+                      - All tests are passing
+                      - Code style checks are passing
+                      
+                      Please review the changes before merging.
+                  branch: update-dependencies
+                  delete-branch: true

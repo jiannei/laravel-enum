@@ -1,25 +1,33 @@
-name: Test
+name: Tests
 
 on:
     push:
-        branches: [ main ]
+        branches: [ main, develop ]
     pull_request:
-        branches: [ main ]
+        branches: [ main, develop ]
 
 jobs:
     tests:
-        name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }}
+        name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
         runs-on: ${{ matrix.os }}
         strategy:
             fail-fast: false
             matrix:
                 os: [ ubuntu-latest ]
-                php: [8.2]
-                laravel: [ 11.* ]
+                php: [ 8.2, 8.3 ]
+                laravel: [ 10.*, 11.*, 12.* ]
                 dependency-version: [ prefer-stable ]
                 include:
+                    - laravel: 10.*
+                      testbench: 8.*
                     - laravel: 11.*
                       testbench: 9.*
+                    - laravel: 12.*
+                      testbench: 10.*
+                exclude:
+                    # Laravel 12 requires PHP 8.2+
+                    - php: 8.1
+                      laravel: 12.*
 
         steps:
             - name: Checkout code
@@ -32,16 +40,18 @@ jobs:
               uses: actions/cache@v4
               with:
                   path: vendor
-                  key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+                  key: ${{ runner.os }}-php-${{ matrix.php }}-laravel-${{ matrix.laravel }}-${{ hashFiles('**/composer.lock') }}
                   restore-keys: |
-                      ${{ runner.os }}-php-
+                      ${{ runner.os }}-php-${{ matrix.php }}-laravel-${{ matrix.laravel }}-
+                      ${{ runner.os }}-php-${{ matrix.php }}-
+                      ${{ runner.os }}-
 
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
                   php-version: ${{ matrix.php }}
                   extensions: curl, mbstring, zip, pcntl, sqlite, pdo_sqlite, iconv
-                  coverage: none
+                  coverage: xdebug
 
             - name: Install dependencies - L${{ matrix.laravel }}
               run: |
@@ -49,4 +59,66 @@ jobs:
                   composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction
 
             - name: Execute tests
-              run: vendor/bin/pest
+              run: vendor/bin/pest --coverage --min=80
+
+    code-style:
+        name: Code Style (Laravel Pint)
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: 8.3
+                  extensions: curl, mbstring, zip, pcntl, sqlite, pdo_sqlite, iconv
+                  coverage: none
+
+            - name: Cache Composer packages
+              uses: actions/cache@v4
+              with:
+                  path: vendor
+                  key: ${{ runner.os }}-php-8.3-${{ hashFiles('**/composer.lock') }}
+                  restore-keys: |
+                      ${{ runner.os }}-php-8.3-
+
+            - name: Install dependencies
+              run: composer install --prefer-dist --no-interaction
+
+            - name: Install Laravel Pint
+              run: composer require laravel/pint --dev --no-interaction
+
+            - name: Run Laravel Pint
+              run: vendor/bin/pint --test
+
+    static-analysis:
+        name: Static Analysis (PHPStan)
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: 8.3
+                  extensions: curl, mbstring, zip, pcntl, sqlite, pdo_sqlite, iconv
+                  coverage: none
+
+            - name: Cache Composer packages
+              uses: actions/cache@v4
+              with:
+                  path: vendor
+                  key: ${{ runner.os }}-php-8.3-${{ hashFiles('**/composer.lock') }}
+                  restore-keys: |
+                      ${{ runner.os }}-php-8.3-
+
+            - name: Install dependencies
+              run: composer install --prefer-dist --no-interaction
+
+            - name: Install PHPStan
+              run: composer require phpstan/phpstan --dev --no-interaction
+
+            - name: Run PHPStan
+              run: vendor/bin/phpstan analyse --memory-limit=2G
