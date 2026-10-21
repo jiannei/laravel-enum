@@ -77,6 +77,10 @@ jobs:
             - name: Install dependencies - L${{ matrix.laravel }}
               run: |
                   composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
+                  if [ "${{ matrix.laravel }}" = "9.*" ]; then
+                      # Testbench 7 is locked to PHPUnit 9; Pest 2+ requires PHPUnit 10+.
+                      composer require "pestphp/pest:^1.22" --no-interaction --no-update
+                  fi
                   # Laravel 9-11 are EOL and every release carries known advisories.
                   # The matrix still exercises them; the audit job keeps the
                   # security signal for the current stack.
@@ -113,6 +117,10 @@ jobs:
             - name: Install lowest dependencies
               run: |
                   composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
+                  if [ "${{ matrix.laravel }}" = "9.*" ]; then
+                      # Testbench 7 is locked to PHPUnit 9; Pest 2+ requires PHPUnit 10+.
+                      composer require "pestphp/pest:^1.22" --no-interaction --no-update
+                  fi
                   composer update --prefer-lowest --prefer-stable --prefer-dist --no-interaction --no-blocking
 
             - name: Execute tests

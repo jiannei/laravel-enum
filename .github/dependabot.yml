@@ -20,6 +20,10 @@ updates:
     allow:
       - dependency-type: "direct"
       - dependency-type: "indirect"
+    ignore:
+      # Pest 5 requires PHP 8.4+, while the package supports PHP 8.1+.
+      - dependency-name: "pestphp/pest"
+        versions: ["5.x"]
 
   - package-ecosystem: "github-actions"
     directory: "/"

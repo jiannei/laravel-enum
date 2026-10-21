@@ -13,7 +13,7 @@ use Jiannei\Enum\Laravel\Tests\Enums\TestEnum;
 use Jiannei\Enum\Laravel\Tests\Enums\UserType;
 
 test('type', function () {
-    expect(UserType::class)->toBeEnum()
+    expect(enum_exists(UserType::class))->toBeTrue()
         ->and(UserType::ADMINISTRATOR)->toBeInstanceOf(UnitEnum::class)
         ->and(UserType::ADMINISTRATOR)->toBeInstanceOf(BackedEnum::class);
 });
