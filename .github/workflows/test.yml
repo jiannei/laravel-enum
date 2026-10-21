@@ -65,7 +65,7 @@ jobs:
                   coverage: none
 
             - name: Cache Composer packages
-              uses: actions/cache@v5
+              uses: actions/cache@v6
               with:
                   path: vendor
                   key: ${{ runner.os }}-php-${{ matrix.php }}-laravel-${{ matrix.laravel }}-${{ hashFiles('**/composer.lock') }}
@@ -214,7 +214,7 @@ jobs:
                   coverage: none
 
             - name: Cache Composer packages
-              uses: actions/cache@v5
+              uses: actions/cache@v6
               with:
                   path: tests-lumen/vendor
                   key: ${{ runner.os }}-php-${{ matrix.php }}-lumen-${{ matrix.lumen }}-${{ hashFiles('tests-lumen/composer.json') }}
