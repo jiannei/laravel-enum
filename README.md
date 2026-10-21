@@ -33,12 +33,30 @@ php8.1 版本后内置枚举支持，更多信息可以查看：https://www.php.
 - 📋 **数组转换**：支持转换为数组格式，适用于 API 响应和表单选项
 - ⚠️ **错误处理**：提供详细的错误信息，包含有效值提示
 
-## 安装
+## 兼容性
 
-支持 Laravel 10 以上版本：
+| Laravel | 推荐版本 | PHP | 状态 |
+|---------|----------|-----|------|
+| 13.x | `^5.0` | 8.3 / 8.4 / 8.5 | ✅ CI 覆盖 |
+| 12.x | `^5.0` | 8.2 / 8.3 / 8.4 / 8.5 | ✅ CI 覆盖 |
+| 11.x | `^5.0` | 8.2 / 8.3 / 8.4 | ✅ CI 覆盖 |
+| 10.x | `^5.0` | 8.1 / 8.2 / 8.3 | ✅ CI 覆盖 |
+| 9.x | `^5.0` | 8.1 / 8.2 | ✅ CI 覆盖 |
+| 5.5 – 8.x | `^1.0` / `^2.0` / `^3.0` | 7.x | ⛔ 已 EOL，仅历史版本可用 |
+| Lumen 9 – 11 | `^5.0` | 8.1 – 8.4 | ✅ 冒烟测试（CI 覆盖 10/11） |
+
+> 原生 PHP 枚举要求 PHP 8.1+，因此 Laravel 5.5–8 无法使用 5.x 版本。完整的版本/分支/EOL 说明见 [docs/COMPATIBILITY.md](docs/COMPATIBILITY.md)。
+
+## 安装
 
 ```shell
 $ composer require jiannei/laravel-enum -vvv
+```
+
+多语言描述依赖 `illuminate/translation`（Laravel 默认包含）。Lumen 或精简安装的项目需自行安装：
+
+```shell
+$ composer require illuminate/translation
 ```
 
 ## 使用
@@ -294,7 +312,7 @@ class CreateUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'type' => ['required', 'integer', Rule::in(UserType::values())],
+            'type' => ['required', Rule::enum(UserType::class)],
         ];
     }
 }
@@ -302,46 +320,29 @@ class CreateUserRequest extends FormRequest
 
 ### 枚举转换和校验
 
-- https://laravel.com/docs/11.x/requests#retrieving-enum-input-values
-- https://laravel.com/docs/11.x/validation#rule-enum
+- https://laravel.com/docs/13.x/requests#retrieving-enum-input-values
+- https://laravel.com/docs/13.x/validation#rule-enum
 
 
 ### Model 中的枚举转换
 
-- https://laravel.com/docs/11.x/eloquent-mutators#enum-casting
+- https://laravel.com/docs/13.x/eloquent-mutators#enum-casting
 
 ## API 参考
 
-### 静态方法
+完整的参数、返回类型与行为约定见 `src/Support/Traits/EnumEnhance.php`。下面是日常最常用的方法：
 
-| 方法 | 返回类型 | 描述 |
-|------|----------|------|
-| `names()` | `array<string>` | 获取所有枚举名称 |
-| `values()` | `array<int\|string>` | 获取所有枚举值 |
-| `count()` | `int` | 获取枚举数量 |
-| `hasName(string $name)` | `bool` | 检查是否包含指定名称 |
-| `hasValue(mixed $value)` | `bool` | 检查是否包含指定值 |
-| `fromName(string $name)` | `static` | 通过名称实例化 |
-| `fromValue(mixed $value)` | `static` | 通过值实例化 |
-| `guess(mixed $value)` | `static` | 智能猜测实例化 |
-| `random()` | `static` | 获取随机枚举实例 |
-| `toArray(?string $localizationGroup = null)` | `array` | 转换为详细数组 |
-| `toSelectArray(?string $localizationGroup = null)` | `array` | 转换为选择数组 |
+| 方法 | 说明 |
+|------|------|
+| `names()` / `values()` | 所有 case 的 name / backing value |
+| `fromName($name)` / `fromValue($value)` | 按 name / value 取 case，失败抛 `ValueError` |
+| `guess($key)` | 先按 name、再按 value 取 case |
+| `random()` | 随机 case |
+| `description($group = 'enums')` | 本地化描述，缺失时回退为 case 名 |
+| `is()` / `isAny()` | 比较 case |
+| `toArray()` / `toSelectArray()` | 数组 / 下拉选项 |
 
-### 实例方法
-
-| 方法 | 返回类型 | 描述 |
-|------|----------|------|
-| `name()` | `string` | 获取枚举名称 |
-| `value()` | `int\|string` | 获取枚举值 |
-| `description(?string $localizationGroup = null)` | `string` | 获取描述 |
-| `is(BackedEnum $enum)` | `bool` | 检查是否等于指定枚举 |
-| `isNot(BackedEnum $enum)` | `bool` | 检查是否不等于指定枚举 |
-| `isAny(BackedEnum ...$enums)` | `bool` | 检查是否为任意指定枚举 |
-| `isFirst()` | `bool` | 检查是否为第一个枚举 |
-| `isLast()` | `bool` | 检查是否为最后一个枚举 |
-| `next()` | `?static` | 获取下一个枚举 |
-| `previous()` | `?static` | 获取上一个枚举 |
+导航与位置方法（`isFirst()`、`isLast()`、`next()`、`previous()`）以及 `Description` 的签名同样以源码为准。
 
 ## License
 

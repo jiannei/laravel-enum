@@ -1,0 +1,35 @@
+{
+    "name": "jiannei/laravel-enum-lumen-smoke",
+    "description": "Lumen smoke tests for jiannei/laravel-enum",
+    "type": "project",
+    "repositories": [
+        {
+            "type": "path",
+            "url": "..",
+            "options": {
+                "symlink": true,
+                "versions": {
+                    "jiannei/laravel-enum": "5.0.0"
+                }
+            }
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "laravel/lumen-framework": "^10.0 || ^11.0",
+        "jiannei/laravel-enum": "^5.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.5 || ^11.0"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Jiannei\\Enum\\Laravel\\Tests\\Lumen\\": "tests/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true
+    }
+}

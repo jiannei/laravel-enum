@@ -1,6 +1,8 @@
 .idea
 *.DS_Store
 /vendor
+/tests-lumen/vendor
+/tests-lumen/composer.lock
 /coverage
 /coverage-html
 coverage.xml

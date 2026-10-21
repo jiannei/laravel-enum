@@ -1,7 +1,17 @@
 * text=auto
 
 /tests export-ignore
+/tests-lumen export-ignore
+/.github export-ignore
+/docs export-ignore
+/scripts export-ignore
+CHANGELOG.md export-ignore
+UPGRADING.md export-ignore
+SECURITY.md export-ignore
+COVERAGE.md export-ignore
 .gitattributes export-ignore
 .gitignore export-ignore
 phpunit.xml.dist export-ignore
 phpunit.xml export-ignore
+pint.json export-ignore
+phpstan.neon export-ignore

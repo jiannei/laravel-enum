@@ -33,3 +33,4 @@
 
 covers('Jiannei\Enum\Laravel\Support\Traits\EnumEnhance');
 covers('Jiannei\Enum\Laravel\Support\Enums\HttpStatusCode');
+covers('Jiannei\Enum\Laravel\Support\Description');

@@ -7,3 +7,6 @@ parameters:
         - src
     reportUnmatchedIgnoredErrors: false
     checkOctaneCompatibility: true
+    # The translator is resolved from the container, whose return type is only
+    # known through PHPDoc; keep the runtime instanceof guard meaningful.
+    treatPhpDocTypesAsCertain: false

@@ -11,9 +11,14 @@
 
 namespace Jiannei\Enum\Laravel\Support\Traits;
 
-use Illuminate\Support\Facades\Lang;
-use Illuminate\Support\Str;
+use BackedEnum;
+use Jiannei\Enum\Laravel\Support\Description;
+use ReflectionEnum;
+use ValueError;
 
+/**
+ * @phpstan-require-implements BackedEnum
+ */
 trait EnumEnhance
 {
     public function name(): string
@@ -28,26 +33,15 @@ trait EnumEnhance
 
     public function description(string $localizationGroup = 'enums'): string
     {
-        $key = "$localizationGroup.".static::class.'.'.$this->name;
-
-        if (Lang::has($key)) {
-            $translation = Lang::get($key);
-            if (is_array($translation)) {
-                return '';
-            }
-
-            return (string) $translation;
-        }
-
-        return (string) Str::of($this->name)->replace('_', ' ')->lower();
+        return Description::fromContainer()->describe($this, $localizationGroup);
     }
 
-    public function is(\BackedEnum $enum): bool
+    public function is(BackedEnum $enum): bool
     {
         return $this === $enum;
     }
 
-    public function isNot(\BackedEnum $enum): bool
+    public function isNot(BackedEnum $enum): bool
     {
         return ! $this->is($enum);
     }
@@ -55,19 +49,9 @@ trait EnumEnhance
     /**
      * Check if this enum is any of the given enums
      */
-    public function isAny(\BackedEnum ...$enums): bool
+    public function isAny(BackedEnum ...$enums): bool
     {
-        return in_array($this, $enums);
-    }
-
-    /**
-     * Get enum cases
-     *
-     * @return array<static>
-     */
-    private static function getCases(): array
-    {
-        return static::cases();
+        return in_array($this, $enums, true);
     }
 
     /**
@@ -75,7 +59,7 @@ trait EnumEnhance
      */
     public static function names(): array
     {
-        return array_column(static::getCases(), 'name');
+        return array_column(static::cases(), 'name');
     }
 
     /**
@@ -83,65 +67,124 @@ trait EnumEnhance
      */
     public static function values(): array
     {
-        return array_column(static::getCases(), 'value');
+        return array_column(static::cases(), 'value');
     }
 
-    public static function hasName(string $name, bool $strict = false): bool
+    public static function hasName(string $name): bool
     {
-        return in_array($name, static::names(), $strict);
+        return static::caseByName($name) !== null;
     }
 
-    public static function hasValue(int|string $value, bool $strict = false): bool
+    public static function hasValue(int|string $value): bool
     {
-        return in_array($value, static::values(), $strict);
+        return static::caseByValue($value) !== null;
     }
 
     /**
-     * Find enum case by property value
+     * @throws ValueError
      */
-    private static function findCase(string $property, mixed $value): static
+    public static function fromName(string $name): static
     {
-        $cases = static::getCases();
+        return static::caseByName($name) ?? throw static::invalidLookup('name', $name, 'names', static::names());
+    }
 
-        foreach ($cases as $case) {
-            if ($value === $case->$property) {
+    /**
+     * @throws ValueError
+     */
+    public static function fromValue(int|string $value): static
+    {
+        return static::caseByValue($value) ?? throw static::invalidLookup('backing value', (string) $value, 'backing values', static::values());
+    }
+
+    /**
+     * @throws ValueError
+     */
+    public static function guess(int|string $key): static
+    {
+        return static::caseByName((string) $key)
+            ?? static::caseByValue($key)
+            ?? throw static::invalidLookup(
+                'name or backing value',
+                (string) $key,
+                'names or backing values',
+                array_values(array_unique([...static::names(), ...static::values()])),
+            );
+    }
+
+    private static function caseByName(string $name): ?static
+    {
+        foreach (static::cases() as $case) {
+            if ($case->name === $name) {
                 return $case;
             }
         }
 
-        // Generate helpful error message with available options
-        $availableValues = $property === 'name' ? static::names() : static::values();
-        $valueType = $property === 'name' ? 'name' : 'backing value';
+        return null;
+    }
 
-        $valueString = is_scalar($value) ? (string) $value : gettype($value);
+    private static function caseByValue(int|string $value): ?static
+    {
+        $value = static::normalizeBackingValue($value);
 
-        throw new \ValueError(sprintf(
-            'Invalid enum %s "%s" for %s. Valid %ss are: %s',
-            $valueType,
-            $valueString,
+        foreach (static::cases() as $case) {
+            if ($case->value === $value) {
+                return $case;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Convert request input to the enum's backing type.
+     *
+     * Int-backed enums accept integer strings, string-backed enums accept
+     * integers. Values that cannot be converted are returned unchanged so the
+     * lookup fails instead of matching the wrong case.
+     */
+    private static function normalizeBackingValue(int|string $value): int|string
+    {
+        if (! enum_exists(static::class)) {
+            return $value;
+        }
+
+        $backingType = (new ReflectionEnum(static::class))->getBackingType();
+
+        if ($backingType?->getName() === 'string') {
+            return (string) $value;
+        }
+
+        if (preg_match('/^\s*-?\d+\s*$/', (string) $value) === 1) {
+            return (int) $value;
+        }
+
+        return $value;
+    }
+
+    /**
+     * @param  array<int, int|string>  $valid
+     */
+    private static function invalidLookup(string $kind, string $input, string $validLabel, array $valid): ValueError
+    {
+        return new ValueError(sprintf(
+            'Invalid enum %s "%s" for %s. Valid %s are: %s',
+            $kind,
+            $input,
             static::class,
-            $valueType,
-            implode(', ', $availableValues)
+            $validLabel,
+            implode(', ', $valid),
         ));
     }
 
-    public static function fromName(string $name): static
+    private static function positionOf(BackedEnum $case): ?int
     {
-        return static::findCase('name', $name);
-    }
+        foreach (static::cases() as $index => $candidate) {
+            if ($candidate === $case) {
+                return $index;
+            }
+        }
 
-    public static function fromValue(int|string $value): static
-    {
-        return static::findCase('value', $value);
-    }
-
-    public static function guess(int|string $key): static
-    {
-        return match (true) {
-            static::hasName((string) $key) => static::fromName((string) $key),
-            static::hasValue($key) => static::fromValue($key),
-            default => throw new \ValueError("$key is illegal for enum \"".static::class.'"')
-        };
+        return null;
     }
 
     /**
@@ -149,11 +192,19 @@ trait EnumEnhance
      */
     public static function toArray(string $localizationGroup = 'enums'): array
     {
-        return array_map(fn ($item) => [
-            'name' => $item->name,
-            'value' => $item->value,
-            'description' => $item->description($localizationGroup),
-        ], static::getCases());
+        $description = Description::fromContainer();
+
+        $items = [];
+
+        foreach (static::cases() as $item) {
+            $items[] = [
+                'name' => $item->name,
+                'value' => $item->value,
+                'description' => $description->describe($item, $localizationGroup),
+            ];
+        }
+
+        return $items;
     }
 
     /**
@@ -170,10 +221,17 @@ trait EnumEnhance
 
     /**
      * Get a random enum case
+     *
+     * @throws ValueError
      */
     public static function random(): static
     {
-        $cases = static::getCases();
+        $enum = static::class;
+        $cases = $enum::cases();
+
+        if ($cases === []) {
+            throw new ValueError('Cannot pick a random case from an empty enum '.static::class);
+        }
 
         return $cases[array_rand($cases)];
     }
@@ -183,7 +241,7 @@ trait EnumEnhance
      */
     public static function count(): int
     {
-        return count(static::getCases());
+        return count(static::cases());
     }
 
     /**
@@ -191,9 +249,7 @@ trait EnumEnhance
      */
     public function isFirst(): bool
     {
-        $cases = static::getCases();
-
-        return $this === reset($cases);
+        return static::positionOf($this) === 0;
     }
 
     /**
@@ -201,9 +257,9 @@ trait EnumEnhance
      */
     public function isLast(): bool
     {
-        $cases = static::getCases();
+        $position = static::positionOf($this);
 
-        return $this === end($cases);
+        return $position !== null && $position === count(static::cases()) - 1;
     }
 
     /**
@@ -211,14 +267,9 @@ trait EnumEnhance
      */
     public function next(): ?static
     {
-        $cases = static::getCases();
-        $currentIndex = array_search($this, $cases, true);
+        $position = static::positionOf($this);
 
-        if ($currentIndex === false || ! is_int($currentIndex) || $currentIndex === count($cases) - 1) {
-            return null;
-        }
-
-        return $cases[$currentIndex + 1];
+        return $position === null ? null : (static::cases()[$position + 1] ?? null);
     }
 
     /**
@@ -226,13 +277,8 @@ trait EnumEnhance
      */
     public function previous(): ?static
     {
-        $cases = static::getCases();
-        $currentIndex = array_search($this, $cases, true);
+        $position = static::positionOf($this);
 
-        if ($currentIndex === false || ! is_int($currentIndex) || $currentIndex === 0) {
-            return null;
-        }
-
-        return $cases[$currentIndex - 1];
+        return $position === null || $position === 0 ? null : (static::cases()[$position - 1] ?? null);
     }
 }

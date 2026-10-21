@@ -2,39 +2,67 @@ name: Tests
 
 on:
     push:
-        branches: [ main, develop ]
+        branches: [ main ]
     pull_request:
-        branches: [ main, develop ]
+        branches: [ main ]
 
 jobs:
     tests:
-        name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
-        runs-on: ${{ matrix.os }}
+        name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }}
+        runs-on: ubuntu-latest
         strategy:
             fail-fast: false
             matrix:
-                os: [ ubuntu-latest ]
-                php: [ 8.2, 8.3 ]
-                laravel: [ 10.*, 11.*, 12.* ]
+                php: [ 8.1, 8.2, 8.3, 8.4, 8.5 ]
+                laravel: [ 9.*, 10.*, 11.*, 12.*, 13.* ]
                 dependency-version: [ prefer-stable ]
                 include:
+                    - laravel: 9.*
+                      testbench: 7.*
                     - laravel: 10.*
                       testbench: 8.*
                     - laravel: 11.*
                       testbench: 9.*
                     - laravel: 12.*
                       testbench: 10.*
+                    - laravel: 13.*
+                      testbench: 11.*
                 exclude:
-                    # Laravel 12 requires PHP 8.2+
+                    # Laravel 11+ requires PHP 8.2+
+                    - php: 8.1
+                      laravel: 11.*
                     - php: 8.1
                       laravel: 12.*
+                    - php: 8.1
+                      laravel: 13.*
+                    # Laravel 13 requires PHP 8.3+
+                    - php: 8.2
+                      laravel: 13.*
+                    # Laravel 9/10 do not support PHP 8.3+
+                    - php: 8.3
+                      laravel: 9.*
+                    - php: 8.4
+                      laravel: 9.*
+                    - php: 8.4
+                      laravel: 10.*
+                    # PHP 8.5 is only supported by Laravel 12/13
+                    - php: 8.5
+                      laravel: 9.*
+                    - php: 8.5
+                      laravel: 10.*
+                    - php: 8.5
+                      laravel: 11.*
 
         steps:
             - name: Checkout code
               uses: actions/checkout@v6
 
-            - name: Validate composer.json and composer.lock
-              run: composer validate --strict
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php }}
+                  extensions: curl, mbstring, zip, pcntl, sqlite, pdo_sqlite, iconv
+                  coverage: none
 
             - name: Cache Composer packages
               uses: actions/cache@v5
@@ -46,20 +74,49 @@ jobs:
                       ${{ runner.os }}-php-${{ matrix.php }}-
                       ${{ runner.os }}-
 
+            - name: Install dependencies - L${{ matrix.laravel }}
+              run: |
+                  composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
+                  # Laravel 9-11 are EOL and every release carries known advisories.
+                  # The matrix still exercises them; the audit job keeps the
+                  # security signal for the current stack.
+                  composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction --no-blocking
+
+            - name: Execute tests
+              run: vendor/bin/pest
+
+    lowest-dependencies:
+        name: Lowest dependencies - P${{ matrix.php }} - L${{ matrix.laravel }}
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - php: 8.1
+                      laravel: 9.*
+                      testbench: 7.*
+                    - php: 8.3
+                      laravel: 13.*
+                      testbench: 11.*
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v6
+
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
                   php-version: ${{ matrix.php }}
                   extensions: curl, mbstring, zip, pcntl, sqlite, pdo_sqlite, iconv
-                  coverage: xdebug
+                  coverage: none
 
-            - name: Install dependencies - L${{ matrix.laravel }}
+            - name: Install lowest dependencies
               run: |
                   composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
-                  composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction
+                  composer update --prefer-lowest --prefer-stable --prefer-dist --no-interaction --no-blocking
 
             - name: Execute tests
-              run: XDEBUG_MODE=coverage vendor/bin/pest --coverage --min=80 --coverage-clover=coverage.xml
+              run: vendor/bin/pest
 
     code-style:
         name: Code Style (Laravel Pint)
@@ -75,16 +132,8 @@ jobs:
                   extensions: curl, mbstring, zip, pcntl, sqlite, pdo_sqlite, iconv
                   coverage: none
 
-            - name: Cache Composer packages
-              uses: actions/cache@v5
-              with:
-                  path: vendor
-                  key: ${{ runner.os }}-php-8.3-${{ hashFiles('**/composer.lock') }}
-                  restore-keys: |
-                      ${{ runner.os }}-php-8.3-
-
             - name: Install dependencies
-              run: composer install --prefer-dist --no-interaction
+              run: composer update --prefer-dist --no-interaction
 
             - name: Run Laravel Pint
               run: vendor/bin/pint --test
@@ -103,16 +152,74 @@ jobs:
                   extensions: curl, mbstring, zip, pcntl, sqlite, pdo_sqlite, iconv
                   coverage: none
 
-            - name: Cache Composer packages
-              uses: actions/cache@v5
-              with:
-                  path: vendor
-                  key: ${{ runner.os }}-php-8.3-${{ hashFiles('**/composer.lock') }}
-                  restore-keys: |
-                      ${{ runner.os }}-php-8.3-
-
             - name: Install dependencies
-              run: composer install --prefer-dist --no-interaction
+              run: |
+                  composer require "laravel/framework:13.*" "orchestra/testbench:11.*" --no-interaction --no-update
+                  composer update --prefer-dist --no-interaction
 
             - name: Run Larastan
               run: vendor/bin/phpstan analyse --memory-limit=2G
+
+    composer-validate:
+        name: Composer Validate
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v6
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: 8.3
+                  coverage: none
+
+            - name: Validate composer.json
+              run: composer validate --strict
+
+            - name: Audit dependencies
+              run: |
+                  composer update --no-install --no-interaction
+                  # No vendor tree is installed in this job.
+                  composer audit --locked --no-interaction
+
+    lumen:
+        name: P${{ matrix.php }} - Lumen ${{ matrix.lumen }}
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - lumen: 10.*
+                      php: 8.1
+                    - lumen: 11.*
+                      php: 8.4
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v6
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php }}
+                  extensions: curl, mbstring, zip, pcntl, sqlite, pdo_sqlite, iconv
+                  coverage: none
+
+            - name: Cache Composer packages
+              uses: actions/cache@v5
+              with:
+                  path: tests-lumen/vendor
+                  key: ${{ runner.os }}-php-${{ matrix.php }}-lumen-${{ matrix.lumen }}-${{ hashFiles('tests-lumen/composer.json') }}
+                  restore-keys: |
+                      ${{ runner.os }}-php-${{ matrix.php }}-lumen-
+                      ${{ runner.os }}-php-${{ matrix.php }}-
+
+            - name: Install dependencies
+              working-directory: tests-lumen
+              run: |
+                  composer require "laravel/lumen-framework:${{ matrix.lumen }}" --no-interaction --no-update
+                  composer update --prefer-dist --no-interaction
+
+            - name: Execute Lumen smoke tests
+              working-directory: tests-lumen
+              run: vendor/bin/phpunit

@@ -32,12 +32,30 @@ Join the community discussion: [A More Elegant Way to Write APIs - Enumeration U
 - 📋 **Array Conversion**: Supports conversion to array formats, suitable for API responses and form options
 - ⚠️ **Error Handling**: Provides detailed error messages with valid value hints
 
-## Installation
+## Compatibility
 
-Supports Laravel 10 and above:
+| Laravel | Recommended version | PHP | Status |
+|---------|---------------------|-----|--------|
+| 13.x | `^5.0` | 8.3 / 8.4 / 8.5 | ✅ CI tested |
+| 12.x | `^5.0` | 8.2 / 8.3 / 8.4 / 8.5 | ✅ CI tested |
+| 11.x | `^5.0` | 8.2 / 8.3 / 8.4 | ✅ CI tested |
+| 10.x | `^5.0` | 8.1 / 8.2 / 8.3 | ✅ CI tested |
+| 9.x | `^5.0` | 8.1 / 8.2 | ✅ CI tested |
+| 5.5 – 8.x | `^1.0` / `^2.0` / `^3.0` | 7.x | ⛔ EOL, legacy versions only |
+| Lumen 9 – 11 | `^5.0` | 8.1 – 8.4 | ✅ Smoke tested (CI covers 10/11) |
+
+> Native PHP enums require PHP 8.1+, so Laravel 5.5–8 cannot use the 5.x line. See [docs/COMPATIBILITY.md](docs/COMPATIBILITY.md) for the full version/branch/EOL matrix.
+
+## Installation
 
 ```shell
 $ composer require jiannei/laravel-enum -vvv
+```
+
+Localized descriptions require `illuminate/translation` (included in Laravel by default). Lumen or minimal installations must require it explicitly:
+
+```shell
+$ composer require illuminate/translation
 ```
 
 ## Usage
@@ -127,8 +145,8 @@ $admin->is(UserType::ADMINISTRATOR); // true
 // Check if not equal to another enum
 $admin->isNot(UserType::SUBSCRIBER); // true
 
-// Check if matches any enum in an array
-$admin->isAny([UserType::ADMINISTRATOR, UserType::MODERATOR]); // true
+// Check if matches any enum
+$admin->isAny(UserType::ADMINISTRATOR, UserType::MODERATOR); // true
 ```
 
 ### Position and Navigation
@@ -305,10 +323,10 @@ class User extends Model
     
     public function canModerate(): bool
     {
-        return $this->type->isAny([
+        return $this->type->isAny(
             UserType::ADMINISTRATOR,
             UserType::MODERATOR,
-        ]);
+        );
     }
 }
 ```
@@ -341,12 +359,12 @@ class CreateUserRequest extends FormRequest
 
 #### Enum Conversion and Validation
 
-- [Retrieving Enum Input Values](https://laravel.com/docs/11.x/requests#retrieving-enum-input-values)
-- [Enum Validation Rule](https://laravel.com/docs/11.x/validation#rule-enum)
+- [Retrieving Enum Input Values](https://laravel.com/docs/13.x/requests#retrieving-enum-input-values)
+- [Enum Validation Rule](https://laravel.com/docs/13.x/validation#rule-enum)
 
 #### Enum Casting in Models
 
-- [Enum Casting](https://laravel.com/docs/11.x/eloquent-mutators#enum-casting)
+- [Enum Casting](https://laravel.com/docs/13.x/eloquent-mutators#enum-casting)
 
 ```php
 <?php
@@ -366,41 +384,24 @@ class User extends Model
 
 ## API Reference
 
-### Static Methods
+See `src/Support/Traits/EnumEnhance.php` for the complete signatures, parameter types and behavior contract. The methods used most often:
 
-| Method | Return Type | Description |
-|--------|-------------|-------------|
-| `names()` | `array` | Get all enum case names |
-| `values()` | `array` | Get all enum case values |
-| `count()` | `int` | Get the number of enum cases |
-| `hasName(string $name, bool $strict = false)` | `bool` | Check if name exists |
-| `hasValue(int\|string $value, bool $strict = false)` | `bool` | Check if value exists |
-| `fromName(string $name)` | `static` | Create instance from name |
-| `fromValue(int\|string $value)` | `static` | Create instance from value |
-| `guess(int\|string $key)` | `static` | Create instance by guessing from name or value |
-| `random()` | `static` | Get a random enum instance |
-| `toArray(string $group = 'enums')` | `array` | Convert to array with full info |
-| `toSelectArray(string $group = 'enums')` | `array` | Convert to select array format |
+| Method | Description |
+|--------|-------------|
+| `names()` / `values()` | All case names / backing values |
+| `fromName($name)` / `fromValue($value)` | Resolve a case by name / value, throws `ValueError` |
+| `guess($key)` | Resolve by name first, then by value |
+| `random()` | A random case |
+| `description($group = 'enums')` | Localized description, falls back to the case name |
+| `is()` / `isAny()` | Compare cases |
+| `toArray()` / `toSelectArray()` | Array / select options |
 
-### Instance Methods
-
-| Method | Return Type | Description |
-|--------|-------------|-------------|
-| `name` | `string` | Get the enum case name |
-| `value` | `int\|string` | Get the enum case value |
-| `description(string $group = 'enums')` | `string` | Get localized description |
-| `is(BackedEnum $enum)` | `bool` | Check if equal to another enum |
-| `isNot(BackedEnum $enum)` | `bool` | Check if not equal to another enum |
-| `isAny(array $enums)` | `bool` | Check if matches any enum in array |
-| `isFirst()` | `bool` | Check if it's the first enum case |
-| `isLast()` | `bool` | Check if it's the last enum case |
-| `next()` | `static\|null` | Get the next enum case (null if last) |
-| `previous()` | `static\|null` | Get the previous enum case (null if first) |
+Navigation helpers (`isFirst()`, `isLast()`, `next()`, `previous()`) and the `Description` signatures live in the same source files.
 
 ## Requirements
 
 - PHP 8.1+
-- Laravel 10.0+ or Lumen 10.0+
+- Laravel 9.0+ or Lumen 9.0+
 
 ## Testing
 

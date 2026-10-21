@@ -1,6 +1,17 @@
 {
     "name": "jiannei/laravel-enum",
     "description": "A simple and easy-to-use enumeration extension package to help you manage enumerations in your project more conveniently, supporting Laravel and Lumen",
+    "homepage": "https://github.com/Jiannei/laravel-enum",
+    "support": {
+        "issues": "https://github.com/Jiannei/laravel-enum/issues",
+        "source": "https://github.com/Jiannei/laravel-enum"
+    },
+    "keywords": [
+        "laravel",
+        "lumen",
+        "enum",
+        "enumeration"
+    ],
     "license": "MIT",
     "authors": [
         {
@@ -8,11 +19,18 @@
             "email": "longjian.huang@foxmail.com"
         }
     ],
+    "require": {
+        "php": "^8.1",
+        "illuminate/support": "^9.0 || ^10.0 || ^11.0 || ^12.0 || ^13.0"
+    },
     "require-dev": {
-        "orchestra/testbench": "^11.0",
-        "pestphp/pest": "^4.1.2",
+        "orchestra/testbench": "^7.0 || ^8.0 || ^9.0 || ^10.0 || ^11.0",
+        "pestphp/pest": "^2.0 || ^3.0 || ^4.0",
         "laravel/pint": "^1.0",
         "larastan/larastan": "^2.0 || ^3.0"
+    },
+    "suggest": {
+        "illuminate/translation": "Required to localize enum descriptions via description()."
     },
     "autoload": {
         "psr-4": {
@@ -31,9 +49,13 @@
         "style": "vendor/bin/pint",
         "analyse": "vendor/bin/phpstan analyse --memory-limit=2G"
     },
-    "minimum-stability": "dev",
-    "prefer-stable" : true,
+    "extra": {
+        "branch-alias": {
+            "dev-main": "5.x-dev"
+        }
+    },
     "config": {
+        "sort-packages": true,
         "allow-plugins": {
             "pestphp/pest-plugin": true
         }

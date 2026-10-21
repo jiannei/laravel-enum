@@ -31,11 +31,11 @@ jobs:
 
             - name: Install dependencies
               run: |
-                  composer require "laravel/framework:^12.0" "orchestra/testbench:^10.0" --no-interaction --no-update
-                  composer install --prefer-dist --no-interaction
+                  composer require "laravel/framework:13.*" "orchestra/testbench:11.*" --no-interaction --no-update
+                  composer update --prefer-stable --prefer-dist --no-interaction
 
             - name: Run tests with coverage
-              run: XDEBUG_MODE=coverage vendor/bin/pest --coverage --coverage-clover=coverage.xml
+              run: XDEBUG_MODE=coverage vendor/bin/pest --coverage --min=80 --coverage-clover=coverage.xml
 
             - name: Upload coverage to Codecov
               uses: codecov/codecov-action@v5
