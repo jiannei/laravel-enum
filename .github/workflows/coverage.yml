@@ -38,9 +38,9 @@ jobs:
               run: XDEBUG_MODE=coverage vendor/bin/pest --coverage --min=80 --coverage-clover=coverage.xml
 
             - name: Upload coverage to Codecov
-              uses: codecov/codecov-action@v5
+              uses: codecov/codecov-action@v7
               with:
-                  file: ./coverage.xml
+                  files: ./coverage.xml
                   flags: unittests
                   name: codecov-umbrella
                   fail_ci_if_error: false
